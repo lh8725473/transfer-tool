@@ -40,6 +40,19 @@ pageService.getPagePluginDetail = data => {
 }
 
 /*
+ * 访问记录详情
+ * post /page/pagePluginDetail
+ * pageId 页面详情记录id
+ */
+pageService.getPageDetailById = data => {
+  return service({
+    url: '/page/pageDetailById',
+    method: 'post',
+    data
+  })
+}
+
+/*
  * 省数据
  * post /public/city/getAllList
  * params = {

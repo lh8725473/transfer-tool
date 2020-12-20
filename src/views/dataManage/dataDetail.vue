@@ -115,25 +115,25 @@
         <el-row class="margin-bottom15">
           <el-col :span="8" class="text-overflow">
             <label>URL：</label>
-            <span>{{ deviceInfo.machine_name }}</span>
+            <span>{{ pageDetail.url }}</span>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>域名：</label>
-            <span>{{ deviceInfo.device_serial }}</span>
+            <span>{{ pageDetail.host }}</span>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>页面标题：</label>
-            <span>{{ deviceInfo.device_user_name }}</span>
+            <span>{{ pageDetail.page_title }}</span>
           </el-col>
         </el-row>
         <el-row class="margin-bottom15">
           <el-col :span="8" class="text-overflow">
             <label>页面路径：</label>
-            <span>{{ deviceInfo.sys_name }}</span>
+            <span>{{ pageDetail.path_name }}</span>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>页面访问时间：</label>
-            <span>{{ deviceInfo.version }}</span>
+            <span>{{ pageDetail.create_time }}</span>
           </el-col>
         </el-row>
       </div>
@@ -234,6 +234,7 @@ export default {
       },
       apiDetail: {
       },
+      pageDetail: {},
       pagePluginDetail: [],
       total: 0,
       multipleSelection: [],
@@ -275,12 +276,23 @@ export default {
     this.deviceinfoId = this.$route.query.deviceinfoId
     this.browserConfigId = this.$route.query.browserConfigId
     this.pageId = this.$route.query.pageId
-    this.getDeviceDetail()
-    this.getBrowserDetail()
-    this.getApiDetail()
-    this.getPagePluginDetail()
+    this.init()
   },
   methods: {
+    init() {
+      this.getDeviceDetail()
+      this.getBrowserDetail()
+      this.getApiDetail()
+      this.getPagePluginDetail()
+      this.getPageDetailById()
+    },
+    getPageDetailById() {
+      pageService.getPageDetailById({
+        pageId: this.pageId
+      }).then(res => {
+        this.pageDetail = res
+      })
+    },
     getBrowserDetail() {
       browserService.getBrowserDetail({
         browserConfigId: this.browserConfigId

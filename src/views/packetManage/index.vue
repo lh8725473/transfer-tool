@@ -37,14 +37,14 @@
     <el-row class="action-button">
       <el-upload
         class="upload-demo"
-        action="/api/data/offlineUpload?token=9C63UtYKf51nTJyos0NpK04DZqSuGmtA"
+        :action="uploadUrl"
         :show-file-list="false"
         :on-success="handleSuccess"
       >
-        <el-button size="mini" type="primary">点击上传</el-button>
+        <el-button size="mini" type="primary"><i class="el-icon-upload2" /> 上传</el-button>
       </el-upload>
-      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1">下载</el-button>
-      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1">删除</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1" @click="downLoad"><i class="el-icon-download" /> 下载</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1"><i class="el-icon-delete" /> 删除</el-button>
     </el-row>
     <div class="table-div">
       <el-table
@@ -107,6 +107,7 @@ export default {
   data() {
     return {
       total: 0,
+      uploadUrl: this.$uploadUrl + localStorage.getItem('token'),
       multipleSelection: [],
       auditStatusList: [
         {
@@ -162,6 +163,10 @@ export default {
     handleSuccess(res, file) {
       console.log(res)
       console.log(file)
+    },
+    downLoad() {
+      window.open(process.env.VUE_APP_BASE_API + '/data/sourceFileDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token'), '_blank')
+      // window.location.href = process.env.VUE_APP_BASE_API + '/data/sourceFIleDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token')
     }
   }
 }
@@ -172,28 +177,12 @@ export default {
   height: 100%;
   padding: 20px 30px;
   height: 100%;
-  // .seach-div{
-  //   height: 50px;
-  // }
   .action-button{
     margin-bottom: 10px;
     .upload-demo{
       display: inline-block;
       margin-right: 10px;
     }
-  }
-  .table-div{
-    height: calc(100% - 120px);
-    border: 1px solid #DCDFE6;
-  }
-  .pagination{
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .el-date-editor.el-input, .el-date-editor.el-input__inner{
-    width: 150px;
   }
 }
 </style>

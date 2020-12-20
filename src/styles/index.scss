@@ -64,3 +64,27 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.table-div{
+  height: calc(100% - 120px);
+  border: 1px solid #DCDFE6;
+}
+.pagination{
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.el-date-editor.el-input, .el-date-editor.el-input__inner{
+  width: 150px;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover>td:first-child{
+  border-left: 2px solid #409EFF !important;
+}
+
+.text-overflow{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

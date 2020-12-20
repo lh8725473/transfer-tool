@@ -1,7 +1,7 @@
 <template>
-  <div class="authenticationCompany">
+  <div class="dataManage">
     <div class="seach-div">
-      <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
         <el-form-item label="企业名称">
           <el-input v-model="searchParams.user" placeholder="企业名称" />
         </el-form-item>
@@ -15,49 +15,66 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-row class="action-button">
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1"><i class="el-icon-delete" /> 删除</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1"><i class="el-icon-download" /> 下载</el-button>
+    </el-row>
     <div class="table-div">
       <el-table
-        :data="companyAuthList"
-        border
+        :data="pageRecordList"
         style="width: 100%;height: 100%"
       >
         <el-table-column
-          prop="companyName"
-          label="企业名称"
-        />
-        <el-table-column
-          prop="unifiedCode"
-          label="信用代码"
-        />
-        <el-table-column
-          prop="addr"
+          prop="url"
           label="地址"
-        />
-        <el-table-column
-          prop="website"
-          label="公司官网"
-        />
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-        />
-        <el-table-column
-          prop="auditStatus"
-          label="状态"
+          show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.auditStatus | companyAuditStatusFormat }}
+            <el-link type="primary" :href="'#/dataDetail?browserConfigId=' + scope.row.browserConfigId + '&deviceinfoId=' + scope.row.deviceinfoId + '&pageId=' + scope.row.pageId">{{ scope.row.url }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          width="100"
-        >
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="viewDetail(scope.row)">查看</el-button>
-            <el-button v-show="scope.row.auditStatus === 1" type="text" size="small" @click="goCompanyAuth(scope.row)">审核</el-button>
-          </template>
-        </el-table-column>
+          prop="apiCount"
+          label="api个数"
+        />
+        <el-table-column
+          prop="assessTime"
+          label="页面访问时间"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="browser.browserName"
+          label="浏览器名称"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="pageTitle"
+          label="页面标题"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="pathName"
+          label="页面路径"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="pluginCount"
+          label="插件访问次数"
+        />
+        <el-table-column
+          prop="pluginTypeCount"
+          label="插件个数"
+        />
+        <el-table-column
+          prop="device.deviceSerial"
+          label="设备标识"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="sys.sysName"
+          label="操作系统"
+          show-overflow-tooltip
+        />
       </el-table>
     </div>
     <div class="pagination">
@@ -72,13 +89,14 @@
 </template>
 
 <script>
-import adminService from '@/api/admin'
+import pageService from '@/api/page'
 
 export default {
-  name: 'AuthenticationCompany',
+  name: 'DataManage',
   data() {
     return {
       total: 0,
+      multipleSelection: [],
       auditStatusList: [
         {
           label: '未提交审核',
@@ -97,23 +115,30 @@ export default {
           id: 3
         }
       ],
-      companyAuthList: [],
+      pageRecordList: [],
       searchParams: {
-        pageNum: 1,
-        pageSize: 10,
+        browserId: null, // 浏览器主键id
+        apiName: null, // api名称
+        classId: null, // 插件id
+        sysId: null, // 系统主键id
+        resourceFileId: null, // 原始文件记录id
+        accessStartTime: null, // 页面访问开始时间
+        accessEndTime: null, // 页面访问结束时间
+        page: 1,
+        size: 10,
         sortColumns: '',
         sortDefault: false
       }
     }
   },
   created() {
-    // this.getCompanyAuthList()
+    this.getPageRecordList()
   },
   methods: {
-    getCompanyAuthList() {
-      adminService.getCompanyAuthList(this.searchParams)
+    getPageRecordList() {
+      pageService.getPageRecordList(this.searchParams)
         .then(res => {
-          this.companyAuthList = res.array
+          this.pageRecordList = res.data
           this.total = res.total
         })
     },
@@ -121,8 +146,8 @@ export default {
       this.$router.push('/admin/authentication/companyAuth?id=' + row.id + '&view=1')
     },
     pageChange(page) {
-      this.searchParams.pageNum = page
-      this.getCompanyAuthList()
+      this.searchParams.page = page
+      this.getPageRecordList()
     },
     onSubmit() {
     },
@@ -134,20 +159,15 @@ export default {
 </script>
 
 <style lang='scss'>
-.authenticationCompany{
+.dataManage{
   height: 100%;
   padding: 20px 30px;
-  .seach-div{
-    height: 60px;
-  }
-  .table-div{
-    height: calc(100% - 100px);
-  }
-  .pagination{
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  .action-button{
+    margin-bottom: 10px;
+    .upload-demo{
+      display: inline-block;
+      margin-right: 10px;
+    }
   }
 }
 </style>

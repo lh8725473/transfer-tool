@@ -82,7 +82,19 @@ export const constantRoutes = [
         path: '/dataManage',
         name: 'dataManage',
         component: () => import('@/views/dataManage/index'),
-        meta: { title: '数据管理', icon: 'table' }
+        meta: { title: '插件管理', icon: 'example' }
+      }
+    ]
+  },
+  {
+    path: '/dataDetail',
+    component: Layout,
+    children: [
+      {
+        path: '/dataDetail',
+        name: 'dataDetail',
+        component: () => import('@/views/dataManage/dataDetail'),
+        meta: { title: '数据详情' }
       }
     ]
   },

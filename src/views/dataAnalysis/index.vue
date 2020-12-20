@@ -137,12 +137,6 @@ export default {
 .authenticationCompany{
   height: 100%;
   padding: 20px 30px;
-  .seach-div{
-    height: 60px;
-  }
-  .table-div{
-    height: calc(100% - 100px);
-  }
   .pagination{
     height: 40px;
     display: flex;

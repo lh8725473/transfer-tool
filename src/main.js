@@ -50,14 +50,11 @@ Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 
 // 上传地址
-Vue.prototype.$uploadUrl =
-  process.env.VUE_APP_API_ROOT + '/sys/file/upload/singleFile'
+Vue.prototype.$uploadUrl = process.env.VUE_APP_BASE_API + '/data/offlineUpload?token='
 // 下载地址
-Vue.prototype.$downloadPath =
-  process.env.VUE_APP_API_ROOT + 'reid/download?second_path=TEMP&fileName='
+Vue.prototype.$downloadPath = process.env.VUE_APP_BASE_API + 'reid/download?second_path=TEMP&fileName='
 // 预览地址
-Vue.prototype.$previewPath =
-  process.env.VUE_APP_API_ROOT + '/sys/file/preview/file?filePath='
+Vue.prototype.$previewPath = process.env.VUE_APP_BASE_API + '/sys/file/preview/file?filePath='
 
 // 全局filter
 Object.keys(filters).forEach((key) => {

@@ -3,28 +3,28 @@
     <div class="seach-div">
       <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
         <el-form-item label="">
-          <el-input v-model="searchParams.user" placeholder="文件名/设备标识" suffix-icon="el-icon-search" />
+          <el-input v-model="searchParams.searchKey" placeholder="文件名/设备标识" suffix-icon="el-icon-search" />
         </el-form-item>
         <el-form-item label="">
-          <el-select v-model="searchParams.auditStatus" placeholder="上传人员">
-            <el-option v-for="item in auditStatusList" :key="item.id" :label="item.label" :value="item.id" />
+          <el-select v-model="searchParams.userId" placeholder="上传人员">
+            <el-option v-for="item in userList" :key="item.userId" :label="item.userName" :value="item.userId" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
-          <el-select v-model="searchParams.auditStatus" placeholder="设备地址">
-            <el-option v-for="item in auditStatusList" :key="item.id" :label="item.label" :value="item.id" />
+          <el-select v-model="searchParams.deviceSerial" placeholder="设备地址">
+            <el-option v-for="item in deviceList" :key="item.deviceId" :label="item.deviceSerial" :value="item.deviceSerial" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
           <el-date-picker
-            v-model="searchParams.value1"
+            v-model="searchParams.startTime"
             type="date"
             placeholder="开始日期"
           />
         </el-form-item>
         <el-form-item label="-">
           <el-date-picker
-            v-model="searchParams.value1"
+            v-model="searchParams.endTime"
             type="date"
             placeholder="结束日期"
           />
@@ -101,6 +101,8 @@
 <script>
 import adminService from '@/api/admin'
 import sourceFileRecordService from '@/api/sourceFileRecord'
+import { getUser } from '@/api/user'
+import deviceService from '@/api/device'
 
 export default {
   name: 'PacketManage',
@@ -130,19 +132,39 @@ export default {
       sourceFileRecordList: [],
       searchParams: {
         page: 1,
-        size: 10
-      }
+        size: 10,
+        searchKey: null,
+        userId: null,
+        startTime: null,
+        endTime: null
+      },
+      userList: [],
+      deviceList: []
     }
   },
   created() {
+    this.getUser()
+    this.getDevice()
     this.getSourceFileRecordList()
   },
   methods: {
+    getUser() {
+      getUser()
+        .then(res => {
+          this.userList = res.data
+        })
+    },
     getSourceFileRecordList() {
       sourceFileRecordService.getSourceFileRecordList(this.searchParams)
         .then(res => {
           this.sourceFileRecordList = res.data
           this.total = res.total
+        })
+    },
+    getDevice() {
+      deviceService.getDevice()
+        .then(res => {
+          this.deviceList = res.data
         })
     },
     viewDetail(row) {
@@ -153,6 +175,7 @@ export default {
       this.getSourceFileRecordList()
     },
     onSubmit() {
+      this.getSourceFileRecordList()
     },
     goCompanyAuth(row) {
       this.$router.push('/admin/authentication/companyAuth?id=' + row.id)

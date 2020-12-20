@@ -16,6 +16,19 @@ deviceService.getDeviceDetail = data => {
 }
 
 /*
+ * 查询所有的设备列表
+ * post /device/getDevice
+ * deviceinfoId 设备详情记录id
+ */
+deviceService.getDevice = data => {
+  return service({
+    url: '/device/getDevice',
+    method: 'get',
+    data
+  })
+}
+
+/*
  * 省数据
  * post /public/city/getAllList
  * params = {

@@ -6,7 +6,7 @@
           <el-input v-model="searchParams.user" placeholder="企业名称" />
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-select v-model="searchParams.auditStatus" placeholder="请选择">
+          <el-select v-model="searchParams.auditStatus" placeholder="请选择" @change="onChange">
             <el-option v-for="item in auditStatusList" :key="item.id" :label="item.label" :value="item.id" />
           </el-select>
         </el-form-item>
@@ -135,6 +135,10 @@ export default {
     this.getPageRecordList()
   },
   methods: {
+    onChange() {
+      console.log('调用function')
+      // this.searchParams.resourceFileId=null
+    },
     getPageRecordList() {
       pageService.getPageRecordList(this.searchParams)
         .then(res => {

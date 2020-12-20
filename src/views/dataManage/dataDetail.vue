@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>唯一标识：</label>
-            <span>{{ deviceInfo.device_serial }}</span>
+            <span :title="deviceInfo.device_serial">{{ deviceInfo.device_serial }}</span>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>设备名称：</label>
@@ -115,7 +115,7 @@
         <el-row class="margin-bottom15">
           <el-col :span="8" class="text-overflow">
             <label>URL：</label>
-            <span>{{ pageDetail.url }}</span>
+            <span :title="pageDetail.url">{{ pageDetail.url }}</span>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>域名：</label>
@@ -152,28 +152,79 @@
           </el-row>
           <el-row class="margin-bottom15">
             <el-col :span="8" class="text-overflow">
-              <label>发布者：</label>
-              <span>{{ plugin.companyName }}</span>
+              <label>插件ID：</label>
+              <span>{{ plugin.classId }}</span>
             </el-col>
             <el-col :span="8" class="text-overflow">
-              <label>域名：</label>
-              <span>{{ deviceInfo.device_serial }}</span>
+              <label>插件路径：</label>
+              <span>{{ plugin.systemPlugin.directory }}</span>
             </el-col>
             <el-col :span="8" class="text-overflow">
-              <label>页面标题：</label>
-              <span>{{ deviceInfo.device_user_name }}</span>
+              <label>插件文件名：</label>
+              <span>{{ plugin.systemPlugin.fileName }}</span>
             </el-col>
           </el-row>
           <el-row class="margin-bottom15">
             <el-col :span="8" class="text-overflow">
-              <label>页面路径：</label>
-              <span>{{ deviceInfo.sys_name }}</span>
+              <label>插件大小：</label>
+              <span>{{ plugin.systemPlugin.fileSize }}</span>
             </el-col>
             <el-col :span="8" class="text-overflow">
-              <label>页面访问时间：</label>
-              <span>{{ deviceInfo.version }}</span>
+              <label>插件属性ID：</label>
+              <span>{{ plugin.systemPlugin.progId }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>id：</label>
+              <span>{{ plugin.id }}</span>
             </el-col>
           </el-row>
+          <el-row class="margin-bottom15">
+            <el-col :span="8" class="text-overflow">
+              <label>插件类型ID：</label>
+              <span>{{ plugin.systemPlugin.typeLib }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>插件版本：</label>
+              <span>{{ plugin.systemPlugin.version }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>插件类型：</label>
+              <span>{{ plugin.systemPlugin.type }}</span>
+            </el-col>
+          </el-row>
+          <el-row class="margin-bottom15">
+            <el-col :span="8" class="text-overflow">
+              <label>是否启用：</label>
+              <span>{{ plugin.systemPlugin.enabled }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>插件阻止次数：</label>
+              <span>{{ plugin.systemPlugin.blockCount }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>作者：</label>
+              <span>{{ plugin.companyName }}</span>
+            </el-col>
+          </el-row>
+
+          <el-row class="margin-bottom15">
+            <el-col :span="8" class="text-overflow">
+              <label>宽度：</label>
+              <span>{{ plugin.width }}</span>
+            </el-col>
+            <el-col :span="8" class="text-overflow">
+              <label>高度：</label>
+              <span>{{ plugin.height }}</span>
+            </el-col>
+          </el-row>
+
+          <el-row class="margin-bottom15">
+            <el-col :span="24" class="text-overflow">
+              <label>HTML：</label>
+              <code>{{ plugin.outerHTML }}</code>
+            </el-col>
+          </el-row>
+
           <el-row>
             <el-col :span="12" class="text-overflow">
               <label>该插件调用API情况：共使用API数量 {{ plugin.functions.length }}</label>

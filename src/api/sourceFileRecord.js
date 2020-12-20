@@ -15,6 +15,18 @@ sourceFileRecordService.getSourceFileRecordList = data => {
 }
 
 /*
+ * 逻辑删除原始数据
+ * post /data/sourceFileDelete
+ */
+sourceFileRecordService.sourceFileDelete = data => {
+  return service({
+    url: '/data/sourceFileDelete',
+    method: 'post',
+    data
+  })
+}
+
+/*
  * 省数据
  * post /public/city/getAllList
  * params = {

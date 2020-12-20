@@ -20,21 +20,21 @@
         <div class="home-main-item">
           <div class="icon" />
           <div class="infos-wrap">
-            <div class="num">123</div>
+            <div class="num">{{ countInfo.deviceCount }}</div>
             <div class="text">接入设备数量</div>
           </div>
         </div>
         <div class="home-main-item">
           <div class="icon" />
           <div class="infos-wrap">
-            <div class="num">123</div>
+            <div class="num">{{ countInfo.sourceFileCount }}</div>
             <div class="text">数据包数量</div>
           </div>
         </div>
         <div class="home-main-item">
           <div class="icon" />
           <div class="infos-wrap">
-            <div class="num">1152</div>
+            <div class="num">{{ countInfo.pageCount }}</div>
             <div class="text">清理数据量（M）</div>
           </div>
         </div>
@@ -52,30 +52,35 @@
       <div class="title">
         <h2>数据处理记录</h2>
         <el-select
-          v-model="selectData"
+          v-model="searchDate"
           placeholder="请选择范围"
           size="mini"
+          @change="getSourceReocrd"
         >
           <el-option
+            label="近15天"
+            value="-15"
+          />
+          <el-option
             label="近7天"
-            value="7"
+            value="-7"
           />
           <el-option
             label="近3天"
-            value="3"
+            value="-3"
           />
         </el-select>
       </div>
       <div class="con-wrap">
-        <div v-for="n in 8" :key="n" class="con">
+        <div v-for="record in sourceRecordList" :key="record.sfId" class="con">
           <div class="con-left">
             <div class="con-left-one">
-              <div class="text-01">数据上传</div>
-              <div class="text-02">上传人 某某</div>
+              <div class="text-01">{{ record.fileName }}</div>
+              <div class="text-02">{{ record.userName }}</div>
             </div>
-            <div class="con-left-two">2020-11-25</div>
+            <div class="con-left-two">{{ record.createTime }}</div>
           </div>
-          <div class="con-right">15.2M</div>
+          <div class="con-right">{{ record.fileSize }}MB</div>
         </div>
       </div>
     </div>
@@ -83,34 +88,75 @@
 </template>
 
 <script>
-import adminService from '@/api/admin'
-import HomeChart from '@/components/Echarts/HomeChart.vue'
+import homeService from '@/api/home'
+import homeChart from '@/components/Echarts/HomeChart'
+import sourceFileRecordService from '@/api/sourceFileRecord'
+import dayjs from 'dayjs'
+import _ from 'lodash'
 
 export default {
   name: 'Home',
   components: {
-    HomeChart
+    homeChart
   },
   data() {
     return {
-      homeChart: {
-        radius: '25%',
-        pieDataName: [],
-        pieData: []
+
+      searchParams: {
+        startTime: null,
+        endTime: null
       },
-      selectData: ''
+      searchDate: '-15',
+      countInfo: {},
+      sourceRecordList: []
     }
   },
   created() {
+    this.getHomeCountInfo()
+    this.getSourceReocrd()
   },
   mounted() {
     // 把你所需要数据赋值给data中的pieChart对象，过程省略，然后获取对象中的三个键值
-    var { radius, pieDataName, pieData } = this.homeChart
-    // 数据渲染饼状图
-    this.$refs['home-chart'].initChart(radius, pieDataName, pieData)
+
+    homeService.getChartInfo()
+      .then(res => {
+        const dateTime = []
+        const yData1 = []
+        const yData2 = []
+        _.forEach(res, element => {
+          dateTime.push(element.date_time)
+          yData1.push(element.device_totalnum)
+          yData2.push(element.page_totalnum)
+        })
+
+        // 数据渲染饼状图
+        console.log(dateTime)
+        console.log(yData1)
+        console.log(yData2)
+        this.$refs['home-chart'].initChart(dateTime, yData1, yData2)
+      })
   },
   methods: {
+    getHomeCountInfo() {
+      homeService.getCountInfo()
+        .then(res => {
+          this.countInfo = res
+        })
+    },
+    getSourceReocrd() {
+      var nowDate = new Date()
+      var targetday_milliseconds = nowDate.getTime() + 1000 * 60 * 60 * 24 * parseInt(this.searchDate)
+      nowDate.setTime(targetday_milliseconds)
+      this.searchParams.startTime = dayjs(nowDate).format('YYYY-MM-DD')
+      this.searchParams.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+      sourceFileRecordService.getSourceFileRecordList(this.searchParams)
+        .then(res => {
+          this.sourceRecordList = res.data
+        })
+    }
+
   }
+
 }
 </script>
 

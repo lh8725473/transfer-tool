@@ -20,11 +20,11 @@ deviceService.getDeviceDetail = data => {
  * post /device/getDevice
  * deviceinfoId 设备详情记录id
  */
-deviceService.getDevice = data => {
+deviceService.getDevice = params => {
   return service({
     url: '/device/getDevice',
     method: 'get',
-    data
+    params
   })
 }
 

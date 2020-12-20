@@ -44,7 +44,7 @@
         <el-button size="mini" type="primary"><i class="el-icon-upload2" /> 上传</el-button>
       </el-upload>
       <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1" @click="downLoad"><i class="el-icon-download" /> 下载</el-button>
-      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1"><i class="el-icon-delete" /> 删除</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1" @click="deleteFile"><i class="el-icon-delete" /> 删除</el-button>
     </el-row>
     <div class="table-div">
       <el-table
@@ -190,6 +190,31 @@ export default {
     downLoad() {
       window.open(process.env.VUE_APP_BASE_API + '/data/sourceFileDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token'), '_blank')
       // window.location.href = process.env.VUE_APP_BASE_API + '/data/sourceFIleDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token')
+    },
+    deleteFile() {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        sourceFileRecordService.sourceFileDelete({
+          sfId: this.multipleSelection[0].sfId
+        })
+          .then(res => {
+            this.$notify({
+              title: '删除成功',
+              message: '提示消息',
+              type: 'success'
+            })
+            this.searchParams.page = 1
+            this.getSourceFileRecordList()
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

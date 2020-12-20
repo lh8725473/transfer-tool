@@ -46,7 +46,7 @@ export default {
     this.chart = null
   },
   methods: {
-    initChart(radius, pieDataName, pieData) {
+    initChart(dateTime, yData1, yData2) {
       this.chart = echarts.init(this.$el)
       var option = {
         color: this.colors,
@@ -77,13 +77,13 @@ export default {
             axisTick: {
               alignWithLabel: true
             },
-            data: ['2020-02-24', '2020-02-25', '2020-02-26', '2020-02-27', '2020-02-28', '2020-02-29', '2020-03-01']
+            data: dateTime
           }
         ],
         yAxis: [
           {
             type: 'value',
-            name: '因子1(%)',
+            name: '接入设备数',
             position: 'left',
             axisLine: {
               lineStyle: {
@@ -96,7 +96,7 @@ export default {
           },
           {
             type: 'value',
-            name: '因子2(%)',
+            name: '访问网站次数',
             position: 'right',
             axisLine: {
               lineStyle: {
@@ -124,17 +124,17 @@ export default {
         ],
         series: [
           {
-            name: '因子1',
+            name: '接入设备数',
             type: 'line',
             smooth: true,
-            data: [124, 165, 61, 126, 142, 122, 132]
+            data: yData1
           },
           {
-            name: '因子2',
+            name: '访问网站次数',
             type: 'line',
             smooth: true,
             yAxisIndex: 1,
-            data: [132, 115, 148, 108, 126, 125, 149]
+            data: yData2
           }
           // {
           //   name: '因子3',

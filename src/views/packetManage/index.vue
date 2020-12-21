@@ -64,7 +64,11 @@
         <el-table-column
           prop="fileName"
           label="文件名"
-        />
+        >
+          <template slot-scope="scope">
+            <el-link type="primary" :href="'#/dataManage?sfId=' + scope.row.sfId">{{ scope.row.fileName }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="status"
           label="数据状态"
@@ -210,10 +214,7 @@ export default {
             this.getSourceFileRecordList()
           })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+
       })
     }
   }

@@ -35,7 +35,7 @@
           <div class="icon" />
           <div class="infos-wrap">
             <div class="num">{{ countInfo.pageCount }}</div>
-            <div class="text">清理数据量（M）</div>
+            <div class="text">网站访问次数</div>
           </div>
         </div>
       </div>

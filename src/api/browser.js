@@ -16,6 +16,18 @@ browserService.getBrowserDetail = data => {
 }
 
 /*
+ * 获取所有的浏览器信息
+ * post /browser/getBrowser
+ */
+browserService.getBrowsers = params => {
+  return service({
+    url: '/browser/getBrowser',
+    method: 'get',
+    params
+  })
+}
+
+/*
  * 省数据
  * post /public/city/getAllList
  * params = {

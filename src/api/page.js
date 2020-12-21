@@ -53,6 +53,38 @@ pageService.getPageDetailById = data => {
 }
 
 /*
+ * 获取所有的网站信息
+ * get /site/getSite
+ */
+pageService.getSite = params => {
+  return service({
+    url: '/site/getSite',
+    method: 'get',
+    params
+  })
+}
+
+pageService.getFunctions = params => {
+  return service({
+    url: '/page/getApi',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 删除页面记录
+ * post page/deletePageRecord
+ */
+pageService.pageRecordDelete = data => {
+  return service({
+    url: '/page/deletePageRecord',
+    method: 'post',
+    data
+  })
+}
+
+/*
  * 省数据
  * post /public/city/getAllList
  * params = {

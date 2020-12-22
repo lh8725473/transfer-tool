@@ -25,7 +25,13 @@
           </div>
         </div>
         <div class="home-main-item">
-          <div class="icon" />
+          <div class="icon">
+            <div class="icon-div">
+              <div class="icon-box">
+                <svg-icon icon-class="user" />
+              </div>
+            </div>
+          </div>
           <div class="infos-wrap">
             <div class="num">{{ countInfo.sourceFileCount }}</div>
             <div class="text">数据包数量</div>
@@ -187,6 +193,29 @@ export default {
         padding: 0 10px;
         .icon {
           flex: 2;
+          display: flex;
+          justify-content: center;
+          .icon-div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(82, 181, 138, 0.1);
+            box-shadow: 0px 2px 5px 0px rgba(67, 129, 230, 0.05);
+            border-radius: 50%;
+            .icon-box{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 33px;
+              color: #ffffff;
+              width: 62px;
+              height: 62px;
+              background: #52B58A;
+              border-radius: 50%;
+            }
+          }
         }
         .infos-wrap {
           flex: 3;

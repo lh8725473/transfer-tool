@@ -40,25 +40,18 @@ service.interceptors.response.use(
     if (response.data.status === 1) {
       return response.data.data
     } else {
-      if (response.data.status === 501) { // 前端端无权限
+      if (response.data.status === -6) { // 无权限
         Message({
-          message: response.data.msg,
+          message: response.data.message,
           type: 'error'
         })
-        location.href = '#/client/login'
-        localStorage.removeItem('frontEndToken')
+        location.href = '#/login'
+        localStorage.removeItem('token')
         store.dispatch('updateUser', {})
-        return Promise.reject(response)
-      } if (response.data.status === 401) { // 后端无权限
-        Message({
-          message: response.data.msg,
-          type: 'error'
-        })
-        location.href = '#/admin/login'
         return Promise.reject(response)
       } else {
         Message({
-          message: response.data.msg,
+          message: response.data.message,
           type: 'error'
         })
         return Promise.reject(response)

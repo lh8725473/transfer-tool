@@ -201,6 +201,9 @@ $cursor: #fff;
   width: 100%;
   height: 100%;
   background-color: #4586e2;
+  background: url(./images/bj.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
   .login-main {
     width: 940px;
@@ -214,6 +217,10 @@ $cursor: #fff;
     transform: translate(-50%, -50%);
     .login-main-left {
       flex: 3;
+      background: url(./images/peitu.png);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 80% 80%;
     }
     .el-divider {
       height: 100%;

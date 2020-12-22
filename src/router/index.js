@@ -58,7 +58,7 @@ export const constantRoutes = [
         path: '/home',
         name: 'home',
         component: () => import('@/views/home/index'),
-        meta: { title: '首页', icon: 'table' }
+        meta: { title: '首页', icon: 'home' }
       }
     ]
   },
@@ -70,7 +70,7 @@ export const constantRoutes = [
         path: '/packetManage',
         name: 'packetManage',
         component: () => import('@/views/packetManage/index'),
-        meta: { title: '数据包管理', icon: 'table' }
+        meta: { title: '数据包管理', icon: 'shujubao' }
       }
     ]
   },
@@ -82,7 +82,7 @@ export const constantRoutes = [
         path: '/dataManage',
         name: 'dataManage',
         component: () => import('@/views/dataManage/index'),
-        meta: { title: '插件管理', icon: 'example' }
+        meta: { title: '插件管理', icon: 'shuju' }
       }
     ]
   },
@@ -94,7 +94,8 @@ export const constantRoutes = [
         path: '/dataDetail',
         name: 'dataDetail',
         component: () => import('@/views/dataManage/dataDetail'),
-        meta: { title: '数据详情' }
+        meta: { title: '数据详情' },
+        hidden: true
       }
     ]
   },
@@ -106,7 +107,7 @@ export const constantRoutes = [
         path: '/dataAnalysis',
         name: 'dataAnalysis',
         component: () => import('@/views/dataAnalysis/index'),
-        meta: { title: '数据分析', icon: 'table' }
+        meta: { title: '数据分析', icon: 'shujufenxi' }
       }
     ]
   },

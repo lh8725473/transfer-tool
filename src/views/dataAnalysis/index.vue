@@ -80,6 +80,33 @@
       </el-col>
     </el-row>
 
+    <div class="plug-in-list-div">
+      <div class="title">
+        <div class="panel-header">
+          使用插件排行
+        </div>
+        <div class="width120">使用插件用户数</div>
+        <div class="width120">使用插件设备</div>
+      </div>
+      <div class="plug-in-list">
+        <div v-for="i in 8" :key="i" class="plug-in-item">
+          <div class="plug-in-item-detail">
+            <el-image
+              style="width: 70px; height: 70px"
+              :src="url"
+              fit="contain"
+            />
+            <div class="item-detail">
+              <div class="item-title">插件名称插件名称插件名称</div>
+              <div class="item-type">插件类型：某某类型</div>
+            </div>
+          </div>
+          <div class="width120">173</div>
+          <div class="width120">233</div>
+        </div>
+      </div>
+    </div>
+
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="chart-panel">
@@ -103,6 +130,7 @@ export default {
   name: 'AuthenticationCompany',
   data() {
     return {
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       total: 0,
       statisticsTotal: {},
       auditStatusList: [
@@ -393,6 +421,68 @@ export default {
     .bar-chart{
       height: 400px;
       width: 100%;
+    }
+  }
+  .plug-in-list-div{
+    .title{
+      display: flex;
+      .panel-header{
+        flex: 1;
+        &::before{
+          content: '';
+          width: 3px;
+          background-color: #558AD9;
+          display: inline-block;
+          height: 16px;
+          position: relative;
+          top: 2px;
+        }
+        font-size: 16px;
+        color: #333333;
+        margin-bottom: 10px;
+      }
+      .width120{
+        width: 120px;
+        text-align: center;
+      }
+    }
+    .plug-in-list{
+      border: 1px solid #DCDFE6;
+      padding: 10px;
+      height: 500px;
+      overflow: auto;
+      .plug-in-item{
+        display: flex;
+        border-bottom: 1px solid #DCDFE6;
+        padding: 5px 0;
+        .plug-in-item-detail{
+          flex: 1;
+          display: flex;
+          .el-image{
+            margin-right: 15px;
+          }
+          .item-detail{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .item-title{
+              color: #333333;
+              font-size: 16px;
+              margin-bottom: 10px;
+            }
+            .item-type{
+              font-size: 14px;
+              color: #666666;
+            }
+          }
+        }
+        .width120{
+          width: 120px;
+          text-align: center;
+          line-height: 70px;
+        }
+      }
     }
   }
 }

@@ -3,14 +3,13 @@
     <div class="seach-div">
       <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
         <el-form-item label="">
-          <el-select v-model="searchParams.id" placeholder="请选择">
+          <el-select v-model="searchParams.id" placeholder="请选择" @change="onChange">
             <el-option v-for="item in auditStatusList" :key="item.id" :label="item.label" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="exportReport">报告导出</el-button>
         </el-form-item>
@@ -159,8 +158,8 @@ export default {
       ],
       companyAuthList: [],
       searchParams: {
-        accessStartTime: '',
-        accessEndTime: '',
+        startTime: '',
+        endTime: '',
         id: 0
       }
     }
@@ -341,32 +340,39 @@ export default {
         })
     },
     getTotal() {
-      reportService.getTotal({})
+      reportService.getTotal(this.searchParams)
         .then(res => {
           this.statisticsTotal = res
         })
     },
     getPluginRankData() {
-      reportService.getPluginRank({})
+      reportService.getPluginRank(this.searchParams)
         .then(res => {
           this.pluginRankData = res
         })
     },
-    onSubmit() {
-      const now = dayjs()
-      const startTime = now.subtract(this.searchParams.id, 'day')
-      this.searchParams.accessStartTime = dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')
-      this.searchParams.accessEndTime = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
+    onChange() {
+      if (this.searchParams.id === 0) {
+        this.searchParams.startTime = ''
+        this.searchParams.endTime = ''
+      } else {
+        const now = dayjs()
+        const startTime = now.subtract(this.searchParams.id, 'day')
+        this.searchParams.startTime = dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')
+        this.searchParams.endTime = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
+      }
+
       this.init()
       this.getPluginRankData()
       this.getTotal()
     },
+
     exportReport() {
-      console.log('导出所有的数据')
       const params = qs.stringify({
         token: localStorage.getItem('token'),
         ...this.searchParams
       })
+      console.log(this.searchParams)
       window.open(process.env.VUE_APP_BASE_API + '/report/exportReport?' + params, '_blank')
     }
 

@@ -98,7 +98,7 @@
             </div>
             <div class="con-left-two">{{ record.createTime }}</div>
           </div>
-          <div class="con-right">{{ record.fileSize }}MB</div>
+          <div class="con-right">{{ record.status | fileRecordStatusFormat }}</div>
         </div>
       </div>
     </div>
@@ -364,7 +364,7 @@ export default {
           }
         }
         .con-right {
-          width: 60px;
+          width: 80px;
           display: flex;
           justify-content: flex-end;
           align-items: center;

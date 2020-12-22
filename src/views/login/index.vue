@@ -80,6 +80,8 @@
 <script>
 import { validuserName } from '@/utils/validate'
 import { login } from '@/api/user'
+import Vue from 'vue'
+import socket from 'socket.io-client'
 
 export default {
   name: 'Login',
@@ -159,6 +161,8 @@ export default {
       login(this.loginForm).then((res) => {
         console.log(res)
         localStorage.setItem('token', res.token)
+        // socket链接
+        Vue.prototype.$socket = socket(process.env.VUE_APP_BASE_WS + '?token=' + res.token)
         this.$router.push('/home')
         this.loading = false
       }).catch(() => {

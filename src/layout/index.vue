@@ -42,6 +42,24 @@ export default {
       }
     }
   },
+  created() {
+    this.$socket.on('source_file_status_analysis', (res) => {
+      console.log(res)
+      if (res.status === 2) {
+        this.$notify({
+          title: '分析成功',
+          message: res.fileName,
+          type: 'success'
+        })
+      } else if (res.status === 3) {
+        this.$notify({
+          title: '分析失败',
+          message: res.fileName,
+          type: 'eorror'
+        })
+      }
+    })
+  },
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })

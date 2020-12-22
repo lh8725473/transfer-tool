@@ -55,6 +55,10 @@ Vue.prototype.$uploadUrl = process.env.VUE_APP_BASE_API + '/data/offlineUpload?t
 Vue.prototype.$downloadPath = process.env.VUE_APP_BASE_API + 'reid/download?second_path=TEMP&fileName='
 // 预览地址
 Vue.prototype.$previewPath = process.env.VUE_APP_BASE_API + '/sys/file/preview/file?filePath='
+// socket链接
+if (localStorage.getItem('token')) {
+  Vue.prototype.$socket = socket(process.env.VUE_APP_BASE_WS + '?token=' + localStorage.getItem('token'))
+}
 
 // 全局filter
 Object.keys(filters).forEach((key) => {
@@ -65,9 +69,12 @@ Object.keys(filters).forEach((key) => {
 // Vue.prototype.$socket = socket('ws://192.168.100.178:5700/video_template')
 // Vue.prototype.$socket = socket(process.env.VUE_APP_BASE_WS)
 
-new Vue({
+const vueInstance = new Vue({
   el: '#app',
   router,
   store,
   render: (h) => h(App)
 })
+
+console.log(vueInstance)
+export default vueInstance

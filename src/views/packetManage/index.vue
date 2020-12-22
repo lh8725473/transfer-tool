@@ -188,8 +188,21 @@ export default {
       this.multipleSelection = val
     },
     handleSuccess(res, file) {
-      console.log(res)
-      console.log(file)
+      if (res.data[0].status === 1) {
+        this.searchParams.page = 1
+        this.getSourceFileRecordList()
+        this.$notify({
+          title: '成功',
+          message: '上传成功',
+          type: 'success'
+        })
+      } else {
+        this.$notify({
+          title: '上传失败',
+          message: res.data[0].uploadMessage,
+          type: 'error'
+        })
+      }
     },
     downLoad() {
       window.open(process.env.VUE_APP_BASE_API + '/data/sourceFileDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token'), '_blank')

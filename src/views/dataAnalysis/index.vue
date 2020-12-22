@@ -2,13 +2,17 @@
   <div class="authenticationCompany">
     <div class="seach-div">
       <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
-        <el-form-item label="审核状态">
-          <el-select v-model="searchParams.auditStatus" placeholder="请选择">
+        <el-form-item label="">
+          <el-select v-model="searchParams.id" placeholder="请选择">
             <el-option v-for="item in auditStatusList" :key="item.id" :label="item.label" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="exportReport">报告导出</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -85,24 +89,19 @@
         <div class="panel-header">
           使用插件排行
         </div>
-        <div class="width120">使用插件用户数</div>
+        <div class="width120">使用插件网站数</div>
         <div class="width120">使用插件设备</div>
       </div>
       <div class="plug-in-list">
-        <div v-for="i in 8" :key="i" class="plug-in-item">
+        <div v-for="item in pluginRankData" :key="item.classid" class="plug-in-item">
           <div class="plug-in-item-detail">
-            <el-image
-              style="width: 70px; height: 70px"
-              :src="url"
-              fit="contain"
-            />
             <div class="item-detail">
-              <div class="item-title">插件名称插件名称插件名称</div>
-              <div class="item-type">插件类型：某某类型</div>
+              <div class="item-title">{{ item.name }}</div>
+              <div class="item-type">插件类型：{{ item.type }}</div>
             </div>
           </div>
-          <div class="width120">173</div>
-          <div class="width120">233</div>
+          <div class="width120">{{ item.site_count }}</div>
+          <div class="width120">{{ item.device_count }}</div>
         </div>
       </div>
     </div>
@@ -125,6 +124,8 @@ import adminService from '@/api/admin'
 import reportService from '@/api/report'
 import _ from 'lodash'
 import Data from './data'
+import qs from 'qs'
+import dayjs from 'dayjs'
 
 export default {
   name: 'AuthenticationCompany',
@@ -133,36 +134,41 @@ export default {
       url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       total: 0,
       statisticsTotal: {},
+      pluginRankData: [],
       auditStatusList: [
         {
-          label: '未提交审核',
+          label: '所有时间',
           id: 0
         },
         {
-          label: '审核中',
-          id: 1
+          label: '近1个月',
+          id: 30
         },
         {
-          label: '审核通过',
-          id: 2
+          label: '近15天',
+          id: 15
         },
         {
-          label: '审核驳回',
+          label: '近7天',
+          id: 7
+        },
+        {
+          label: '近3天',
           id: 3
         }
       ],
       companyAuthList: [],
       searchParams: {
-        pageNum: 1,
-        pageSize: 10,
-        sortColumns: '',
-        sortDefault: false
+        accessStartTime: '',
+        accessEndTime: '',
+        id: 0
       }
     }
   },
   created() {
     // this.getCompanyAuthList()
     this.getTotal()
+    this.getPluginRankData()
   },
   mounted() {
     reportService.getPluginInDevice({})
@@ -337,7 +343,26 @@ export default {
           this.statisticsTotal = res
         })
     },
+    getPluginRankData() {
+      reportService.getPluginRank({})
+        .then(res => {
+          this.pluginRankData = res
+        })
+    },
     onSubmit() {
+      const now = dayjs()
+      const startTime = now.subtract(this.searchParams.id, 'day')
+      this.searchParams.accessStartTime = dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')
+      this.searchParams.accessEndTime = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
+      console.log(this.searchParams)
+    },
+    exportReport() {
+      console.log('导出所有的数据')
+      const params = qs.stringify({
+        token: localStorage.getItem('token'),
+        ...this.searchParams
+      })
+      window.open(process.env.VUE_APP_BASE_API + '/report/exportReport?' + params, '_blank')
     }
 
   }

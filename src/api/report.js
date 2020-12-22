@@ -74,4 +74,16 @@ reportService.getPluginDistribution = data => {
   })
 }
 
+/*
+ * 数据统计-插件使用排行- 按插件统计设备
+ * post /report/pluginRank
+ */
+reportService.getPluginRank = data => {
+  return service({
+    url: '/report/pluginRank',
+    method: 'post',
+    data
+  })
+}
+
 export default reportService

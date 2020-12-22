@@ -6,7 +6,7 @@ const reportService = {}
  * 查看访问该页面时浏览器的详细配置信息
  * post /report/usingPluginInDevice
  */
-reportService.getBrowserDetail = data => {
+reportService.getPluginInDevice = data => {
   return service({
     url: '/report/usingPluginInDevice',
     method: 'post',
@@ -15,29 +15,62 @@ reportService.getBrowserDetail = data => {
 }
 
 /*
- * 获取所有的浏览器信息
- * post /browser/getBrowser
+ * 数据统计-浏览器使用插件分布
+ * post /report/pluginRankInBrowser
  */
-reportService.getBrowsers = params => {
+reportService.getRankInBrowser = data => {
   return service({
-    url: '/browser/getBrowser',
-    method: 'get',
-    params
+    url: '/report/pluginRankInBrowser',
+    method: 'post',
+    data
   })
 }
 
 /*
- * 省数据
- * post /public/city/getAllList
- * params = {
- *  provinceId: 130000
- * }
+ * 数据统计-总数统计
+ * post /report/statisticsTotal
  */
-reportService.getCityList = params => {
+reportService.getTotal = data => {
   return service({
-    url: '/public/city/getAllList',
-    method: 'get',
-    params
+    url: '/report/statisticsTotal',
+    method: 'post',
+    data
+  })
+}
+
+/*
+ * 数据统计-访问域名统计次数
+ * post /report/accessSiteStatistic
+ */
+reportService.getAccessSiteeStatistic = data => {
+  return service({
+    url: '/report/accessSiteStatistic',
+    method: 'post',
+    data
+  })
+}
+
+/*
+ *数据统计-按域名统计插件个数
+ * post /report/pluginCountBySite
+ */
+reportService.getPluginCountBySite = data => {
+  return service({
+    url: '/report/pluginCountBySite',
+    method: 'post',
+    data
+  })
+}
+
+/*
+ * 数据统计-系统插件使用设备分布
+ * post /report/pluginDistribution
+ */
+reportService.getPluginDistribution = data => {
+  return service({
+    url: '/report/pluginDistribution',
+    method: 'post',
+    data
   })
 }
 

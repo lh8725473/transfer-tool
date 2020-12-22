@@ -65,15 +65,15 @@
         >
           <el-option
             label="近15天"
-            value="-15"
+            value="15"
           />
           <el-option
             label="近7天"
-            value="-7"
+            value="7"
           />
           <el-option
             label="近3天"
-            value="-3"
+            value="3"
           />
         </el-select>
       </div>
@@ -112,7 +112,7 @@ export default {
         startTime: null,
         endTime: null
       },
-      searchDate: '-15',
+      searchDate: '15',
       countInfo: {},
       sourceRecordList: []
     }
@@ -150,11 +150,11 @@ export default {
         })
     },
     getSourceReocrd() {
-      var nowDate = new Date()
-      var targetday_milliseconds = nowDate.getTime() + 1000 * 60 * 60 * 24 * parseInt(this.searchDate)
-      nowDate.setTime(targetday_milliseconds)
-      this.searchParams.startTime = dayjs(nowDate).format('YYYY-MM-DD')
-      this.searchParams.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+      const now = dayjs()
+      const startTime = now.subtract(this.searchDate, 'day')
+
+      this.searchParams.startTime = dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')
+      this.searchParams.endTime = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
       sourceFileRecordService.getSourceFileRecordList(this.searchParams)
         .then(res => {
           this.sourceRecordList = res.data

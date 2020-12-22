@@ -3,36 +3,36 @@
     <div class="seach-div">
       <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
         <el-form-item label="">
-          <el-select v-model="searchParams.sfId" clearable placeholder="数据包名" @change="onChange">
+          <el-select v-model="searchParams.sfId" clearable placeholder="数据包名" @change="onChange(1)">
             <el-option v-for="item in sourceFileList" :key="item.sfId" :label="item.fileName" :value="item.sfId" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
-          <el-select v-model="searchParams.browserId" clearable placeholder="浏览器类型" @change="onChange">
+          <el-select v-model="searchParams.browserId" clearable placeholder="浏览器类型" @change="onChange(2)">
             <el-option v-for="item in browserList" :key="item.browserId" :label="item.browserName" :value="item.browserId" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="">
-          <el-select v-model="searchParams.siteId" clearable placeholder="网站地址" @change="onChange">
+          <el-select v-model="searchParams.siteId" clearable placeholder="网站地址" @change="onChange(3)">
             <el-option v-for="item in siteList" :key="item.siteId" :label="item.host" :value="item.siteId" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="">
-          <el-select v-model="searchParams.classId" clearable placeholder="插件类型" @change="onChange">
+          <el-select v-model="searchParams.classId" clearable placeholder="插件类型" @change="onChange(4)">
             <el-option v-for="item in pluginList" :key="item.classId" :label="item.fileName" :value="item.classId" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="">
-          <el-select v-model="searchParams.apiName" clearable placeholder="API类型" @change="onChange">
+          <el-select v-model="searchParams.apiName" clearable placeholder="API类型" @change="onChange(4)">
             <el-option v-for="item in apiList" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="getPageRecordList">查询</el-button>
         </el-form-item>
       </el-form>
 
@@ -157,62 +157,64 @@ export default {
     this.searchParams.sfId = parseInt(this.$route.query.sfId)
     if (!this.searchParams.sfId) {
       this.searchParams.sfId = null
+    } else {
+      this.getBrowserList()
     }
+
     this.getPageRecordList()
-    this.getBrowserList()
     this.getResourceList()
   },
   methods: {
-    onChange() {
-      console.log(this.searchParams.browserId + 'tttt')
-      if (this.searchParams.browserId && this.browserList) {
-        if (!this.siteList) {
-          pageService.getSite({ borwserId: this.searchParams.browserId })
+    onChange(index) {
+      if (index === 1) {
+        // 需要置空所有的级联数据
+        this.browserList = null
+        this.siteList = null
+        this.pluginService = null
+        this.apiList = null
+        this.searchParams.browserId = ''
+        this.searchParams.siteId = ''
+        this.searchParams.classId = ''
+        this.searchParams.apiName = ''
+        if (this.searchParams.sfId) {
+          browserService.getBrowsers({ sfId: this.searchParams.sfId })
             .then(res => {
-              this.siteList = res
-              console.log(this.siteList)
+              this.browserList = res
             })
         }
-      } else {
-        this.siteList = null
-        this.pluginList = null
-        this.apiList = null
-        this.searchParams.browserId = null
-        this.searchParams.apiName = null
-        this.searchParams.classId = null
-        this.searchParams.siteId = null
       }
 
-      if (this.searchParams.siteId && this.siteList) {
-        if (!this.pluginList) {
-          pluginService.getPlugins({ siteId: this.searchParams.siteId, borwserId: this.searchParams.browserId })
+      if (index === 2) {
+        this.siteList = null
+        this.pluginService = null
+        this.apiList = null
+        this.searchParams.siteId = ''
+        this.searchParams.classId = ''
+        this.searchParams.apiName = ''
+        if (this.searchParams.browserId) {
+          pageService.getSite({ sfId: this.searchParams.sfId, browserId: this.searchParams.browserId })
+            .then(res => {
+              this.siteList = res
+            })
+        }
+      }
+
+      if (index === 3) {
+        this.pluginService = null
+        this.apiList = null
+        this.searchParams.classId = ''
+        this.searchParams.apiName = ''
+        if (this.searchParams.siteId) {
+          pluginService.getPlugins({ sfId: this.searchParams.sfId, browserId: this.searchParams.browserId, siteId: this.searchParams.siteId })
             .then(res => {
               this.pluginList = res
             })
-        }
-      } else {
-        this.pluginList = null
-        this.apiList = null
-        this.searchParams.apiName = null
-        this.searchParams.classId = null
-        this.searchParams.siteId = null
-      }
-
-      if (this.searchParams.classId && this.pluginList) {
-        if (!this.apiList) {
-          pageService.getFunctions({ siteId: this.searchParams.siteId, borwserId: this.searchParams.browserId, classId: this.searchParams.classId })
+          pageService.getFunctions({ sfId: this.searchParams.sfId, browserId: this.searchParams.browserId, siteId: this.searchParams.siteId })
             .then(res => {
               this.apiList = res
             })
         }
-      } else {
-        console.log('plugin id is null')
-        this.apiList = null
-        this.searchParams.apiName = null
-        this.searchParams.classId = null
       }
-
-      // this.searchParams.resourceFileId=null
     },
     getPageRecordList() {
       pageService.getPageRecordList(this.searchParams)
@@ -222,10 +224,12 @@ export default {
         })
     },
     getBrowserList() {
-      browserService.getBrowsers()
-        .then(res => {
-          this.browserList = res
-        })
+      if (this.searchParams.sfId) {
+        browserService.getBrowsers({ sfId: this.searchParams.sfId })
+          .then(res => {
+            this.browserList = res
+          })
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

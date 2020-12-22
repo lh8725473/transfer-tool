@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-
 export default {
   props: {
     className: {
@@ -34,8 +32,7 @@ export default {
   },
   data() {
     return {
-      chart: null,
-      colors: ['#5793f3', '#d14a61', '#675bba']
+      chart: null
     }
   },
   beforeDestroy() {
@@ -47,9 +44,8 @@ export default {
   },
   methods: {
     initChart(dateTime, yData1, yData2) {
-      this.chart = echarts.init(this.$el)
+      this.chart = window.echarts.init(this.$el, 'hybigdata')
       var option = {
-        color: this.colors,
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -57,8 +53,9 @@ export default {
           }
         },
         grid: {
-          top: '10%',
-          right: '20%'
+          top: '8%',
+          right: '5%',
+          left: '5%'
         },
         toolbox: {
           feature: {
@@ -84,10 +81,12 @@ export default {
           {
             type: 'value',
             name: '接入设备数',
+            nameTextStyle: {
+              color: '#666666'
+            },
             position: 'left',
             axisLine: {
               lineStyle: {
-                color: this.colors[0]
               }
             },
             axisLabel: {
@@ -97,10 +96,12 @@ export default {
           {
             type: 'value',
             name: '访问网站次数',
+            nameTextStyle: {
+              color: '#666666'
+            },
             position: 'right',
             axisLine: {
               lineStyle: {
-                color: this.colors[1]
               }
             },
             axisLabel: {

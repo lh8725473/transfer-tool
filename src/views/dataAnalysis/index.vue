@@ -171,172 +171,175 @@ export default {
     this.getPluginRankData()
   },
   mounted() {
-    reportService.getPluginInDevice({})
-      .then(res => {
-        const mergePieOption1LegendData = []
-        const mergePieOption1SeriesData = []
-        _.forEach(res, item => {
-          mergePieOption1LegendData.push(item.plugin_group)
-          mergePieOption1SeriesData.push({
-            value: item.device_count,
-            name: item.plugin_group
-          })
-        })
-        const mergePieOption1 = {
-          legend: {
-            data: mergePieOption1LegendData
-          },
-          series: [{
-            data: mergePieOption1SeriesData
-          }]
-        }
-        this.echartsInstance1 = window.echarts.init(this.$refs.chart1, 'hybigdata')
-        this.echartsInstance1.setOption(_.merge(_.cloneDeep(Data.pieOption), mergePieOption1))
-      })
-
-    reportService.getRankInBrowser({})
-      .then(res => {
-        const mergeBrowserName = []
-        const mergeBreowserNameSerialsData = []
-        _.forEach(res, item => {
-          mergeBrowserName.push(item.browser_name)
-          mergeBreowserNameSerialsData.push({ value: item.plugin_count, name: item.browser_name })
-        })
-
-        const mergePieOption2 = {
-          legend: {
-            data: mergeBrowserName
-          },
-          series: [{
-            data: mergeBreowserNameSerialsData
-          }]
-        }
-        this.echartsInstance2 = window.echarts.init(this.$refs.chart2, 'hybigdata')
-        this.echartsInstance2.setOption(_.merge(_.cloneDeep(Data.pieOption), mergePieOption2))
-      })
-
-    reportService.getAccessSiteeStatistic({})
-      .then(res => {
-        const mergeSiteList = []
-        const mergeSiteCount = []
-        _.forEach(res, item => {
-          mergeSiteList.push(item.host + item.port)
-          mergeSiteCount.push(item.site_count)
-        })
-
-        const mergeBarOption3 = {
-          legend: {
-            data: ['访问次数']
-          },
-          xAxis: [{
-            type: 'category',
-            data: mergeSiteList
-          }],
-          yAxis: [
-            {
-              type: 'value',
-              name: 'X: 域名/ Y: 次数',
-              nameTextStyle: {
-                color: '#666666'
-              }
-            }
-          ],
-          series: [
-            {
-              name: '访问次数',
-              type: 'bar',
-              data: mergeSiteCount
-            }
-          ]
-        }
-        this.echartsInstance3 = window.echarts.init(this.$refs.chart3, 'hybigdata')
-        this.echartsInstance3.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption3))
-      })
-
-    reportService.getPluginCountBySite({})
-      .then(res => {
-        const mergeSiteList = []
-        const mergeSitePluginCount = []
-        _.forEach(res, item => {
-          mergeSiteList.push(item.host)
-          mergeSitePluginCount.push(item.plugin_count)
-        })
-
-        const mergeBarOption4 = {
-          legend: {
-            data: ['访问次数']
-          },
-          xAxis: [{
-            type: 'category',
-            data: mergeSiteList
-          }],
-          yAxis: [
-            {
-              type: 'value',
-              name: 'X: 域名/ Y: 次数',
-              nameTextStyle: {
-                color: '#666666'
-              }
-            }
-          ],
-          series: [
-            {
-              name: '访问次数',
-              type: 'bar',
-              data: mergeSitePluginCount
-            }
-          ]
-        }
-        this.echartsInstance4 = window.echarts.init(this.$refs.chart4, 'hybigdata')
-        this.echartsInstance4.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption4))
-      })
-
-    reportService.getPluginDistribution({})
-      .then(res => {
-        const mergeSystemName = []
-        const mergePluginCount = []
-        const mergeDeviceCount = []
-        _.forEach(res, item => {
-          mergeSystemName.push(item.sys_name)
-          mergePluginCount.push(item.plugin_count)
-          mergeDeviceCount.push(item.device_count)
-        })
-
-        const mergeBarOption5 = {
-          legend: {
-            data: ['插件数量', '使用设备数']
-          },
-          xAxis: [{
-            type: 'category',
-            data: mergeSystemName
-          }],
-          yAxis: [
-            {
-              type: 'value',
-              name: 'X: 系统/ Y: 数量',
-              nameTextStyle: {
-                color: '#666666'
-              }
-            }
-          ],
-          series: [
-            {
-              name: '插件数量',
-              type: 'bar',
-              data: mergePluginCount
-            },
-            {
-              name: '使用设备数',
-              type: 'bar',
-              data: mergeDeviceCount
-            }
-          ]
-        }
-        this.echartsInstance5 = window.echarts.init(this.$refs.chart5, 'hybigdata')
-        this.echartsInstance5.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption5))
-      })
+    this.init()
   },
   methods: {
+    init() {
+      reportService.getPluginInDevice(this.searchParams)
+        .then(res => {
+          const mergePieOption1LegendData = []
+          const mergePieOption1SeriesData = []
+          _.forEach(res, item => {
+            mergePieOption1LegendData.push(item.plugin_group)
+            mergePieOption1SeriesData.push({
+              value: item.device_count,
+              name: item.plugin_group
+            })
+          })
+          const mergePieOption1 = {
+            legend: {
+              data: mergePieOption1LegendData
+            },
+            series: [{
+              data: mergePieOption1SeriesData
+            }]
+          }
+          this.echartsInstance1 = window.echarts.init(this.$refs.chart1, 'hybigdata')
+          this.echartsInstance1.setOption(_.merge(_.cloneDeep(Data.pieOption), mergePieOption1))
+        })
+
+      reportService.getRankInBrowser(this.searchParams)
+        .then(res => {
+          const mergeBrowserName = []
+          const mergeBreowserNameSerialsData = []
+          _.forEach(res, item => {
+            mergeBrowserName.push(item.browser_name)
+            mergeBreowserNameSerialsData.push({ value: item.plugin_count, name: item.browser_name })
+          })
+
+          const mergePieOption2 = {
+            legend: {
+              data: mergeBrowserName
+            },
+            series: [{
+              data: mergeBreowserNameSerialsData
+            }]
+          }
+          this.echartsInstance2 = window.echarts.init(this.$refs.chart2, 'hybigdata')
+          this.echartsInstance2.setOption(_.merge(_.cloneDeep(Data.pieOption), mergePieOption2))
+        })
+
+      reportService.getAccessSiteeStatistic(this.searchParams)
+        .then(res => {
+          const mergeSiteList = []
+          const mergeSiteCount = []
+          _.forEach(res, item => {
+            mergeSiteList.push(item.host + item.port)
+            mergeSiteCount.push(item.site_count)
+          })
+
+          const mergeBarOption3 = {
+            legend: {
+              data: ['访问次数']
+            },
+            xAxis: [{
+              type: 'category',
+              data: mergeSiteList
+            }],
+            yAxis: [
+              {
+                type: 'value',
+                name: 'X: 域名/ Y: 次数',
+                nameTextStyle: {
+                  color: '#666666'
+                }
+              }
+            ],
+            series: [
+              {
+                name: '访问次数',
+                type: 'bar',
+                data: mergeSiteCount
+              }
+            ]
+          }
+          this.echartsInstance3 = window.echarts.init(this.$refs.chart3, 'hybigdata')
+          this.echartsInstance3.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption3))
+        })
+
+      reportService.getPluginCountBySite(this.searchParams)
+        .then(res => {
+          const mergeSiteList = []
+          const mergeSitePluginCount = []
+          _.forEach(res, item => {
+            mergeSiteList.push(item.host)
+            mergeSitePluginCount.push(item.plugin_count)
+          })
+
+          const mergeBarOption4 = {
+            legend: {
+              data: ['访问次数']
+            },
+            xAxis: [{
+              type: 'category',
+              data: mergeSiteList
+            }],
+            yAxis: [
+              {
+                type: 'value',
+                name: 'X: 域名/ Y: 次数',
+                nameTextStyle: {
+                  color: '#666666'
+                }
+              }
+            ],
+            series: [
+              {
+                name: '访问次数',
+                type: 'bar',
+                data: mergeSitePluginCount
+              }
+            ]
+          }
+          this.echartsInstance4 = window.echarts.init(this.$refs.chart4, 'hybigdata')
+          this.echartsInstance4.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption4))
+        })
+
+      reportService.getPluginDistribution(this.searchParams)
+        .then(res => {
+          const mergeSystemName = []
+          const mergePluginCount = []
+          const mergeDeviceCount = []
+          _.forEach(res, item => {
+            mergeSystemName.push(item.sys_name)
+            mergePluginCount.push(item.plugin_count)
+            mergeDeviceCount.push(item.device_count)
+          })
+
+          const mergeBarOption5 = {
+            legend: {
+              data: ['插件数量', '使用设备数']
+            },
+            xAxis: [{
+              type: 'category',
+              data: mergeSystemName
+            }],
+            yAxis: [
+              {
+                type: 'value',
+                name: 'X: 系统/ Y: 数量',
+                nameTextStyle: {
+                  color: '#666666'
+                }
+              }
+            ],
+            series: [
+              {
+                name: '插件数量',
+                type: 'bar',
+                data: mergePluginCount
+              },
+              {
+                name: '使用设备数',
+                type: 'bar',
+                data: mergeDeviceCount
+              }
+            ]
+          }
+          this.echartsInstance5 = window.echarts.init(this.$refs.chart5, 'hybigdata')
+          this.echartsInstance5.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption5))
+        })
+    },
     getTotal() {
       reportService.getTotal({})
         .then(res => {
@@ -354,7 +357,9 @@ export default {
       const startTime = now.subtract(this.searchParams.id, 'day')
       this.searchParams.accessStartTime = dayjs(startTime).format('YYYY-MM-DD HH:mm:ss')
       this.searchParams.accessEndTime = dayjs(now).format('YYYY-MM-DD HH:mm:ss')
-      console.log(this.searchParams)
+      this.init()
+      this.getPluginRankData()
+      this.getTotal()
     },
     exportReport() {
       console.log('导出所有的数据')
@@ -382,6 +387,7 @@ export default {
   }
   .panel{
     height: 270px;
+    margin-left: 0 !important;
     .panel-item{
       background: #ECF1F8;
       border-radius: 2px;
@@ -434,6 +440,7 @@ export default {
         height: 16px;
         position: relative;
         top: 2px;
+        margin-right: 8px;
       }
       font-size: 16px;
       color: #333333;
@@ -461,6 +468,7 @@ export default {
           height: 16px;
           position: relative;
           top: 2px;
+          margin-right: 8px;
         }
         font-size: 16px;
         color: #333333;
@@ -474,7 +482,7 @@ export default {
     .plug-in-list{
       border: 1px solid #DCDFE6;
       padding: 10px;
-      height: 500px;
+      max-height: 500px;
       overflow: auto;
       .plug-in-item{
         display: flex;

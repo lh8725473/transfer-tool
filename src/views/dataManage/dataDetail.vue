@@ -145,98 +145,101 @@
       </div>
       <div class="panel-content">
         <el-row v-for="plugin in pagePluginDetail" :key="plugin.pluginId" class="plugin-row">
-          <el-row class="margin-bottom15">
-            <el-col :span="12" class="text-overflow">
+          <el-row class="margin-bottom15" style="height: 40px; background: #ecf1f8; line-height: 40px;margin-bottom: 0;padding: 0 15px;border-bottom: 1px solid #DCDFE6;">
+            <el-col :span="24" class="text-overflow">
               <label>{{ plugin.systemPlugin.name }}</label>
             </el-col>
           </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>插件ID：</label>
-              <span>{{ plugin.classId }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件路径：</label>
-              <span>{{ plugin.systemPlugin.directory }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件文件名：</label>
-              <span>{{ plugin.systemPlugin.fileName }}</span>
-            </el-col>
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>插件大小：</label>
-              <span>{{ plugin.systemPlugin.fileSize }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件属性ID：</label>
-              <span>{{ plugin.systemPlugin.progId }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>id：</label>
-              <span>{{ plugin.id }}</span>
-            </el-col>
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>插件类型ID：</label>
-              <span>{{ plugin.systemPlugin.typeLib }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件版本：</label>
-              <span>{{ plugin.systemPlugin.version }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件类型：</label>
-              <span>{{ plugin.systemPlugin.type }}</span>
-            </el-col>
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>是否启用：</label>
-              <span>{{ plugin.systemPlugin.enabled }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>插件阻止次数：</label>
-              <span>{{ plugin.systemPlugin.blockCount }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>作者：</label>
-              <span>{{ plugin.companyName }}</span>
-            </el-col>
-          </el-row>
+          <el-row style="background-color: #FAFAFA; padding: 15px;">
+            <el-row class="margin-bottom15">
+              <el-col :span="8" class="text-overflow">
+                <label>插件ID：</label>
+                <span>{{ plugin.classId }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件路径：</label>
+                <span>{{ plugin.systemPlugin.directory }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件文件名：</label>
+                <span>{{ plugin.systemPlugin.fileName }}</span>
+              </el-col>
+            </el-row>
+            <el-row class="margin-bottom15">
+              <el-col :span="8" class="text-overflow">
+                <label>插件大小：</label>
+                <span>{{ plugin.systemPlugin.fileSize }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件属性ID：</label>
+                <span>{{ plugin.systemPlugin.progId }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>id：</label>
+                <span>{{ plugin.id }}</span>
+              </el-col>
+            </el-row>
+            <el-row class="margin-bottom15">
+              <el-col :span="8" class="text-overflow">
+                <label>插件类型ID：</label>
+                <span>{{ plugin.systemPlugin.typeLib }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件版本：</label>
+                <span>{{ plugin.systemPlugin.version }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件类型：</label>
+                <span>{{ plugin.systemPlugin.type }}</span>
+              </el-col>
+            </el-row>
+            <el-row class="margin-bottom15">
+              <el-col :span="8" class="text-overflow">
+                <label>是否启用：</label>
+                <span>{{ plugin.systemPlugin.enabled }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>插件阻止次数：</label>
+                <span>{{ plugin.systemPlugin.blockCount }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>作者：</label>
+                <span>{{ plugin.companyName }}</span>
+              </el-col>
+            </el-row>
 
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>宽度：</label>
-              <span>{{ plugin.width }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>高度：</label>
-              <span>{{ plugin.height }}</span>
-            </el-col>
-          </el-row>
+            <el-row class="margin-bottom15">
+              <el-col :span="8" class="text-overflow">
+                <label>宽度：</label>
+                <span>{{ plugin.width }}</span>
+              </el-col>
+              <el-col :span="8" class="text-overflow">
+                <label>高度：</label>
+                <span>{{ plugin.height }}</span>
+              </el-col>
+            </el-row>
 
-          <el-row class="margin-bottom15">
+            <el-row class="margin-bottom15">
+              <el-col :span="24" class="text-overflow">
+                <label>HTML：</label>
+                <code>{{ plugin.outerHTML }}</code>
+              </el-col>
+            </el-row>
+          </el-row>
+          <el-row style="background-color: #FeFeFe; padding: 0 15px;border-bottom: 1px solid #DCDFE6;border-top: 1px solid #DCDFE6;height: 40px;line-height: 40px;">
             <el-col :span="24" class="text-overflow">
-              <label>HTML：</label>
-              <code>{{ plugin.outerHTML }}</code>
+              <label style="font-weight: bold;color: #666666;">该插件调用API情况：共使用API数量 {{ plugin.functions.length }}</label>
             </el-col>
           </el-row>
-
-          <el-row>
-            <el-col :span="12" class="text-overflow">
-              <label>该插件调用API情况：共使用API数量 {{ plugin.functions.length }}</label>
-            </el-col>
-          </el-row>
-          <el-row v-for="item in plugin.functions" :key="item.functionId">
-            <el-col :span="12" class="text-overflow">
-              <span>{{ item.functionName }}</span>
-            </el-col>
-            <el-col :span="12" class="text-overflow">
-              <span>调用{{ item.count }}次</span>
-            </el-col>
+          <el-row style="background-color: #FAFAFA;">
+            <el-row v-for="item in plugin.functions" :key="item.functionId" style="padding: 0 15px;height: 40px;line-height:40px;border-bottom: 1px solid #DCDFE6;">
+              <el-col :span="12" class="text-overflow">
+                <span>{{ item.functionName }}</span>
+              </el-col>
+              <el-col :span="12" class="text-overflow">
+                <span>调用{{ item.count }}次</span>
+              </el-col>
+            </el-row>
           </el-row>
         </el-row>
       </div>
@@ -416,10 +419,22 @@ export default {
         height: 16px;
         position: relative;
         top: 2px;
+        margin-right: 8px;
       }
       font-size: 16px;
       color: #333333;
       margin-bottom: 20px;
+    }
+    .panel-content{
+      label{
+        font-weight: bold;
+        color: #666666;
+        font-size: 14px;
+      }
+      span{
+        font-size: 14px;
+      }
+
     }
   }
   .margin-bottom15{
@@ -429,7 +444,6 @@ export default {
     background: #FFFFFF;
     border: 1px solid #E9E9E9;
     border-radius: 2px;
-    padding: 10px 15px;
     margin-bottom: 10px;
     background-color: #DCDFE6;
   }

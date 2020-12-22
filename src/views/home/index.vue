@@ -10,15 +10,21 @@
   <div id="home-wrap">
     <div class="home-main-wrap">
       <div class="home-main-items">
-        <div class="home-main-item date">
+        <!-- <div class="home-main-item date">
           <div class="icon" />
           <div class="infos-wrap">
             <div class="num">10:21</div>
             <div class="text">2020-11-23</div>
           </div>
-        </div>
+        </div> -->
         <div class="home-main-item">
-          <div class="icon" />
+          <div class="icon">
+            <div class="icon-div">
+              <div class="icon-box icon-box1">
+                <svg-icon icon-class="shebei" />
+              </div>
+            </div>
+          </div>
           <div class="infos-wrap">
             <div class="num">{{ countInfo.deviceCount }}</div>
             <div class="text">接入设备数量</div>
@@ -27,8 +33,8 @@
         <div class="home-main-item">
           <div class="icon">
             <div class="icon-div">
-              <div class="icon-box">
-                <svg-icon icon-class="user" />
+              <div class="icon-box icon-box2">
+                <svg-icon icon-class="shuju" />
               </div>
             </div>
           </div>
@@ -38,7 +44,13 @@
           </div>
         </div>
         <div class="home-main-item">
-          <div class="icon" />
+          <div class="icon">
+            <div class="icon-div">
+              <div class="icon-box icon-box3">
+                <svg-icon icon-class="wangzhan" />
+              </div>
+            </div>
+          </div>
           <div class="infos-wrap">
             <div class="num">{{ countInfo.pageCount }}</div>
             <div class="text">网站访问次数</div>
@@ -180,6 +192,7 @@ export default {
     .home-main-items {
       flex: 1;
       display: flex;
+      margin-bottom: 20px;
       .home-main-item {
         flex: 1;
         height: 172px;
@@ -191,6 +204,9 @@ export default {
         margin-left: 20px;
         border-radius: 5px;
         padding: 0 10px;
+        &:first-child{
+          margin-left: 0;
+        }
         .icon {
           flex: 2;
           display: flex;
@@ -212,8 +228,16 @@ export default {
               color: #ffffff;
               width: 62px;
               height: 62px;
-              background: #52B58A;
               border-radius: 50%;
+            }
+            .icon-box1{
+              background: #558AD9;
+            }
+            .icon-box2{
+              background: #52B58A;
+            }
+            .icon-box3{
+              background: #A6606B;
             }
           }
         }

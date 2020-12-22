@@ -7,6 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
+          <i class="el-icon-user-solid" />
           admin
           <i class="el-icon-caret-bottom" />
         </div>

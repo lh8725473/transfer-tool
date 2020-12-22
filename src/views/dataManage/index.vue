@@ -38,7 +38,7 @@
 
     </div>
     <el-row class="action-button">
-      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 1" @click="deletePageReocrd"><i class="el-icon-delete" /> 删除</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length === 0" @click="deletePageReocrd"><i class="el-icon-delete" /> 删除</el-button>
       <el-button type="primary" size="mini" :disabled="multipleSelection.length === 0" @click="downloadPageRecordById"><i class="el-icon-download" /> 下载</el-button>
       <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 0" @click="downloadPageRecord"><i class="el-icon-download" /> 下载全部</el-button>
     </el-row>
@@ -246,8 +246,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        const pageIds = []
+        _.forEach(this.multipleSelection, element => {
+          pageIds.push(element.pageId)
+        })
         pageService.pageRecordDelete({
-          pageId: this.multipleSelection[0].pageId
+          pageId: pageIds
         })
           .then(res => {
             this.$notify({

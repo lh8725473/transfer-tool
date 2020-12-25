@@ -168,7 +168,7 @@ export default {
     getDevice() {
       deviceService.getDevice()
         .then(res => {
-          this.deviceList = res.data
+          this.deviceList = res
         })
     },
     viewDetail(row) {

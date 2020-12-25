@@ -26,21 +26,38 @@
         </el-form-item>
 
         <el-form-item label="">
-          <el-select v-model="searchParams.apiName" clearable placeholder="API类型" @change="onChange(4)">
+          <el-select v-model="searchParams.apiName" clearable placeholder="API类型" @change="onChange(5)">
             <el-option v-for="item in apiList" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
 
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button type="primary" @click="getPageRecordList">查询</el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
 
     </div>
     <el-row class="action-button">
       <el-button type="primary" size="mini" :disabled="multipleSelection.length === 0" @click="deletePageReocrd"><i class="el-icon-delete" /> 删除</el-button>
       <el-button type="primary" size="mini" :disabled="multipleSelection.length === 0" @click="downloadPageRecordById"><i class="el-icon-download" /> 下载</el-button>
-      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 0" @click="downloadPageRecord"><i class="el-icon-download" /> 下载全部</el-button>
+      <el-button type="primary" size="mini" :disabled="multipleSelection.length !== 0" @click="centerDialogVisible = true"><i class="el-icon-download" /> 下载全部</el-button>
+      <el-dialog
+        title="批量下载"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center
+      >
+        <p>记录条数：{{ total }}</p>
+        <p>数据包名：{{ sourceFileName }}</p>
+        <p>浏览器类型：{{ browserName }}</p>
+        <p>网站地址：{{ host }}</p>
+        <p>插件类型：{{ pluginName }}</p>
+        <p>API类型：{{ searchParams.apiName }}</p>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="downloadPageRecord">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-row>
     <div class="table-div">
       <el-table
@@ -64,8 +81,29 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="pageTitle"
+          label="页面标题"
+          show-overflow-tooltip
+        />
+
+        <el-table-column
+          prop="pathName"
+          label="页面路径"
+          show-overflow-tooltip
+        />
+
+        <el-table-column
+          prop="pluginTypeCount"
+          label="插件个数"
+        />
+        <el-table-column
+          prop="pluginCount"
+          label="插件访问次数"
+        />
+
+        <el-table-column
           prop="apiCount"
-          label="api个数"
+          label="API个数"
         />
         <el-table-column
           prop="assessTime"
@@ -73,36 +111,34 @@
           show-overflow-tooltip
         />
         <el-table-column
-          prop="browser.browserName"
+          prop="browserConfig.browser_name"
           label="浏览器名称"
           show-overflow-tooltip
         />
         <el-table-column
-          prop="pageTitle"
-          label="页面标题"
+          prop="browserConfig.version"
+          label="浏览器版本"
           show-overflow-tooltip
         />
+
         <el-table-column
-          prop="pathName"
-          label="页面路径"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="pluginCount"
-          label="插件访问次数"
-        />
-        <el-table-column
-          prop="pluginTypeCount"
-          label="插件个数"
-        />
-        <el-table-column
-          prop="device.deviceSerial"
+          prop="deviceConfig.device_serial"
           label="设备标识"
           show-overflow-tooltip
         />
         <el-table-column
-          prop="sys.sysName"
+          prop="deviceConfig.sys_name"
           label="操作系统"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="deviceConfig.version"
+          label="操作系统版本"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="deviceConfig.os_platform"
+          label="操作系统平台"
           show-overflow-tooltip
         />
       </el-table>
@@ -110,9 +146,13 @@
     <div class="pagination">
       <el-pagination
         background
-        layout="prev, pager, next"
+        :current-page.sync="searchParams.page"
+        :page-size.sync="searchParams.size"
+        layout="total,sizes, prev, pager, next,jumper"
         :total="total"
+        :page-sizes="[10, 20, 50]"
         @current-change="pageChange"
+        @size-change="handleSizeChange"
       />
     </div>
   </div>
@@ -150,7 +190,13 @@ export default {
         size: 10,
         sortColumns: '',
         sortDefault: false
-      }
+      },
+      centerDialogVisible: false,
+      sourceFileName: '',
+      browserName: '',
+      host: '',
+      pluginName: ''
+
     }
   },
   created() {
@@ -166,6 +212,8 @@ export default {
   },
   methods: {
     onChange(index) {
+      this.searchParams.page = 1
+      let obj = {}
       if (index === 1) {
         // 需要置空所有的级联数据
         this.browserList = null
@@ -176,7 +224,18 @@ export default {
         this.searchParams.siteId = ''
         this.searchParams.classId = ''
         this.searchParams.apiName = ''
+        this.pluginName = ''
+        this.browserName = ''
+        this.host = ''
+        this.sourceFileName = ''
         if (this.searchParams.sfId) {
+          obj = this.sourceFileList.find((item) => {
+            return item.sfId === this.searchParams.sfId
+          })
+          if (obj) {
+            this.sourceFileName = obj.fileName
+          }
+
           browserService.getBrowsers({ sfId: this.searchParams.sfId })
             .then(res => {
               this.browserList = res
@@ -191,7 +250,17 @@ export default {
         this.searchParams.siteId = ''
         this.searchParams.classId = ''
         this.searchParams.apiName = ''
+        this.pluginName = ''
+        this.browserName = ''
+        this.host = ''
         if (this.searchParams.browserId) {
+          obj = this.browserList.find((item) => {
+            return item.browserId === this.searchParams.browserId
+          })
+          if (obj) {
+            this.browserName = obj.browserName
+          }
+
           pageService.getSite({ sfId: this.searchParams.sfId, browserId: this.searchParams.browserId })
             .then(res => {
               this.siteList = res
@@ -204,7 +273,15 @@ export default {
         this.apiList = null
         this.searchParams.classId = ''
         this.searchParams.apiName = ''
+        this.pluginName = ''
         if (this.searchParams.siteId) {
+          obj = this.siteList.find((item) => {
+            return item.siteId === this.searchParams.siteId
+          })
+          if (obj) {
+            this.host = obj.host
+          }
+
           pluginService.getPlugins({ sfId: this.searchParams.sfId, browserId: this.searchParams.browserId, siteId: this.searchParams.siteId })
             .then(res => {
               this.pluginList = res
@@ -215,7 +292,18 @@ export default {
             })
         }
       }
+      if (index === 4) {
+        this.pluginName = ''
+        obj = this.pluginList.find((item) => {
+          return item.classId === this.searchParams.classId
+        })
+        if (obj) {
+          this.pluginName = obj.name
+        }
+      }
+      this.getPageRecordList()
     },
+
     getPageRecordList() {
       pageService.getPageRecordList(this.searchParams)
         .then(res => {
@@ -236,6 +324,11 @@ export default {
     },
     pageChange(page) {
       this.searchParams.page = page
+      this.getPageRecordList()
+    },
+    handleSizeChange() {
+      this.searchParams.page = 1
+      // this.searchParams.size = size
       this.getPageRecordList()
     },
     getResourceList() {
@@ -272,6 +365,7 @@ export default {
     },
     downloadPageRecord() {
       console.log('导出所有的数据')
+      this.centerDialogVisible = false
       const params = qs.stringify({
         token: localStorage.getItem('token'),
         ...this.searchParams

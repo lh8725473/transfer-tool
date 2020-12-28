@@ -1,5 +1,4 @@
-import vueInstance from './main.js'
-console.log(vueInstance)
+import Vue from 'vue'
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'

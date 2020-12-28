@@ -83,17 +83,13 @@ pageService.pageRecordDelete = data => {
     data
   })
 }
-
-/*
- * 省数据
- * post /public/city/getAllList
- * params = {
- *  provinceId: 130000
- * }
+/**
+ * 检查是否可以批量下载
+ * get page/checkDownloadStatus
  */
-pageService.getCityList = params => {
+pageService.checkDownloadStatus = params => {
   return service({
-    url: '/public/city/getAllList',
+    url: '/page/checkDownloadStatus',
     method: 'get',
     params
   })

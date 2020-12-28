@@ -61,6 +61,10 @@
       </el-col>
     </el-row>
 
+    <el-select v-model="searchParams.siteCountSize" placeholder="排名前10" @change="changeSiteCountSize">
+      <el-option v-for="item in siteCountList" :key="item.id" :label="item.label" :value="item.id" />
+    </el-select>
+
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="chart-panel">
@@ -72,7 +76,12 @@
       </el-col>
     </el-row>
 
+    <el-select v-model="searchParams.sitePluginCountSize" placeholder="排名前10" @change="changeSitePluginCountSize">
+      <el-option v-for="item in sitePluginCountList" :key="item.id" :label="item.label" :value="item.id" />
+    </el-select>
+
     <el-row :gutter="20">
+
       <el-col :span="24">
         <div class="chart-panel">
           <div class="panel-header">
@@ -156,11 +165,49 @@ export default {
           id: 3
         }
       ],
+      siteCountList: [
+        {
+          label: '排名前20',
+          id: 20
+        },
+        {
+          label: '排名前10',
+          id: 10
+        },
+        {
+          label: '排名前5',
+          id: 5
+        },
+        {
+          label: '排名前3',
+          id: 3
+        }
+      ],
+      sitePluginCountList: [
+        {
+          label: '排名前20',
+          id: 20
+        },
+        {
+          label: '排名前10',
+          id: 10
+        },
+        {
+          label: '排名前5',
+          id: 5
+        },
+        {
+          label: '排名前3',
+          id: 3
+        }
+      ],
       companyAuthList: [],
       searchParams: {
         startTime: '',
         endTime: '',
-        id: 0
+        id: 0,
+        siteCountSize: 10,
+        sitePluginCountSize: 10
       }
     }
   },
@@ -218,82 +265,45 @@ export default {
           this.echartsInstance2.setOption(_.merge(_.cloneDeep(Data.pieOption), mergePieOption2))
         })
 
-      reportService.getAccessSiteeStatistic(this.searchParams)
-        .then(res => {
-          const mergeSiteList = []
-          const mergeSiteCount = []
-          _.forEach(res, item => {
-            mergeSiteList.push(item.host + item.port)
-            mergeSiteCount.push(item.site_count)
-          })
+      // reportService.getAccessSiteeStatistic(this.searchParams)
+      //   .then(res => {
+      //     const mergeSiteList = []
+      //     const mergeSiteCount = []
+      //     _.forEach(res, item => {
+      //       mergeSiteList.push(item.host + item.port)
+      //       mergeSiteCount.push(item.site_count)
+      //     })
 
-          const mergeBarOption3 = {
-            legend: {
-              data: ['访问次数']
-            },
-            xAxis: [{
-              type: 'category',
-              data: mergeSiteList
-            }],
-            yAxis: [
-              {
-                type: 'value',
-                name: 'X: 域名/ Y: 次数',
-                nameTextStyle: {
-                  color: '#666666'
-                }
-              }
-            ],
-            series: [
-              {
-                name: '访问次数',
-                type: 'bar',
-                data: mergeSiteCount
-              }
-            ]
-          }
-          this.echartsInstance3 = window.echarts.init(this.$refs.chart3, 'hybigdata')
-          this.echartsInstance3.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption3))
-        })
-
-      reportService.getPluginCountBySite(this.searchParams)
-        .then(res => {
-          const mergeSiteList = []
-          const mergeSitePluginCount = []
-          _.forEach(res, item => {
-            mergeSiteList.push(item.host)
-            mergeSitePluginCount.push(item.plugin_count)
-          })
-
-          const mergeBarOption4 = {
-            legend: {
-              data: ['访问次数']
-            },
-            xAxis: [{
-              type: 'category',
-              data: mergeSiteList
-            }],
-            yAxis: [
-              {
-                type: 'value',
-                name: 'X: 域名/ Y: 次数',
-                nameTextStyle: {
-                  color: '#666666'
-                }
-              }
-            ],
-            series: [
-              {
-                name: '访问次数',
-                type: 'bar',
-                data: mergeSitePluginCount
-              }
-            ]
-          }
-          this.echartsInstance4 = window.echarts.init(this.$refs.chart4, 'hybigdata')
-          this.echartsInstance4.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption4))
-        })
-
+      //     const mergeBarOption3 = {
+      //       legend: {
+      //         data: ['访问次数']
+      //       },
+      //       xAxis: [{
+      //         type: 'category',
+      //         data: mergeSiteList
+      //       }],
+      //       yAxis: [
+      //         {
+      //           type: 'value',
+      //           name: 'X: 域名/ Y: 次数',
+      //           nameTextStyle: {
+      //             color: '#666666'
+      //           }
+      //         }
+      //       ],
+      //       series: [
+      //         {
+      //           name: '访问次数',
+      //           type: 'bar',
+      //           data: mergeSiteCount
+      //         }
+      //       ]
+      //     }
+      //     this.echartsInstance3 = window.echarts.init(this.$refs.chart3, 'hybigdata')
+      //     this.echartsInstance3.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption3))
+      //   })
+      this.changeSiteCountSize()
+      this.changeSitePluginCountSize()
       reportService.getPluginDistribution(this.searchParams)
         .then(res => {
           const mergeSystemName = []
@@ -374,6 +384,86 @@ export default {
       })
       console.log(this.searchParams)
       window.open(process.env.VUE_APP_BASE_API + '/report/exportReport?' + params, '_blank')
+    },
+    changeSiteCountSize() {
+      console.log(this.searchParams)
+      reportService.getAccessSiteeStatistic(this.searchParams)
+        .then(res => {
+          const mergeSiteList = []
+          const mergeSiteCount = []
+          _.forEach(res, item => {
+            mergeSiteList.push(item.host + item.port)
+            mergeSiteCount.push(item.site_count)
+          })
+
+          const mergeBarOption3 = {
+            legend: {
+              data: ['访问次数']
+            },
+            xAxis: [{
+              type: 'category',
+              data: mergeSiteList
+            }],
+            yAxis: [
+              {
+                type: 'value',
+                name: 'X: 域名/ Y: 次数',
+                nameTextStyle: {
+                  color: '#666666'
+                }
+              }
+            ],
+            series: [
+              {
+                name: '访问次数',
+                type: 'bar',
+                data: mergeSiteCount
+              }
+            ]
+          }
+          this.echartsInstance3 = window.echarts.init(this.$refs.chart3, 'hybigdata')
+          this.echartsInstance3.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption3))
+        })
+    },
+    changeSitePluginCountSize() {
+      console.log(this.searchParams)
+      reportService.getPluginCountBySite(this.searchParams)
+        .then(res => {
+          const mergeSiteList = []
+          const mergeSitePluginCount = []
+          _.forEach(res, item => {
+            mergeSiteList.push(item.host)
+            mergeSitePluginCount.push(item.plugin_count)
+          })
+
+          const mergeBarOption4 = {
+            legend: {
+              data: ['访问次数']
+            },
+            xAxis: [{
+              type: 'category',
+              data: mergeSiteList
+            }],
+            yAxis: [
+              {
+                type: 'value',
+                name: 'X: 域名/ Y: 次数',
+                nameTextStyle: {
+                  color: '#666666'
+                }
+              }
+            ],
+            series: [
+              {
+                name: '访问次数',
+                type: 'bar',
+                data: mergeSitePluginCount
+              }
+            ]
+          }
+          this.echartsInstance4 = window.echarts.init(this.$refs.chart4, 'hybigdata')
+          this.echartsInstance4.setOption(_.merge(_.cloneDeep(Data.barOption), mergeBarOption4))
+        })
     }
 
   }

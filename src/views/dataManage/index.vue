@@ -165,6 +165,7 @@ import pluginService from '@/api/plugin'
 import sourceFileRecordService from '@/api/sourceFileRecord'
 import qs from 'qs'
 import _ from 'lodash'
+import dayjs from 'dayjs'
 export default {
   name: 'DataManage',
   data() {
@@ -186,11 +187,13 @@ export default {
         accessStartTime: null, // 页面访问开始时间
         accessEndTime: null, // 页面访问结束时间
         siteId: null, // 网站id
+        timeStamp: null,
         page: 1,
         size: 10,
         sortColumns: '',
         sortDefault: false
       },
+
       centerDialogVisible: false,
       sourceFileName: '',
       browserName: '',
@@ -365,12 +368,18 @@ export default {
     },
     downloadPageRecord() {
       console.log('导出所有的数据')
-      this.centerDialogVisible = false
-      const params = qs.stringify({
-        token: localStorage.getItem('token'),
-        ...this.searchParams
-      })
-      window.open(process.env.VUE_APP_BASE_API + '/page/exportPageRecord?' + params, '_blank')
+      pageService.checkDownloadStatus()
+        .then(res => {
+          this.centerDialogVisible = false
+          this.searchParams.timeStamp = dayjs().valueOf()
+          const params = qs.stringify({
+            token: localStorage.getItem('token'),
+            ...this.searchParams
+          })
+          console.log(params)
+          window.open(process.env.VUE_APP_BASE_API + '/page/exportPageRecord?' + params, '_blank')
+        })
+
       // window.location.href = process.env.VUE_APP_BASE_API + '/data/sourceFIleDownload?sfId=' + this.multipleSelection[0].sfId + '&token=' + localStorage.getItem('token')
     },
     downloadPageRecordById() {

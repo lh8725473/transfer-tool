@@ -18,7 +18,7 @@
     <el-row :gutter="20" class="panel">
       <el-col :span="8" class="panel-item height100">
         <div class="number font45">{{ statisticsTotal.deviceCount }}</div>
-        <div class="label font16">提交数据设备数</div>
+        <div class="label font16">提交数据终端数</div>
       </el-col>
       <el-col :span="8" class="height100 flex">
         <el-row class="panel-item height125">

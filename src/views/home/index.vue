@@ -27,7 +27,7 @@
           </div>
           <div class="infos-wrap">
             <div class="num">{{ countInfo.deviceCount }}</div>
-            <div class="text">接入设备数量</div>
+            <div class="text">接入终端数量</div>
           </div>
         </div>
         <div class="home-main-item">
@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="infos-wrap">
-            <div class="num">{{ countInfo.sourceFileCount }}</div>
+            <el-link type="primary" class="num" @click="resourceRecordLink">{{ countInfo.sourceFileCount }}</el-link>
             <div class="text">数据包数量</div>
           </div>
         </div>
@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="infos-wrap">
-            <div class="num">{{ countInfo.pageCount }}</div>
+            <el-link type="primary" class="num" @click="pageRecordLink">{{ countInfo.pageCount }}</el-link>
             <div class="text">网站访问次数</div>
           </div>
         </div>
@@ -171,6 +171,14 @@ export default {
         .then(res => {
           this.sourceRecordList = res.data
         })
+    },
+    pageRecordLink() {
+      this.$router.push('/dataManage')
+      this.loading = false
+    },
+    resourceRecordLink() {
+      this.$router.push('/packetManage')
+      this.loading = false
     }
 
   }

@@ -10,9 +10,12 @@
             <label>计算机名：</label>
             <span>{{ deviceInfo.machine_name }}</span>
           </el-col>
-          <el-col :span="8" class="text-overflow">
+          <el-col :span="8" class="elColClass">
             <label>唯一标识：</label>
-            <span :title="deviceInfo.device_serial">{{ deviceInfo.device_serial }}</span>
+            <el-tooltip placement="top">
+              <div slot="content" class="tooltipContent">{{ deviceInfo.device_serial }}</div>
+              <span class="text-overflow">{{ deviceInfo.device_serial }}</span>
+            </el-tooltip>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>设备名称：</label>
@@ -89,14 +92,27 @@
             <label>系统语言：</label>
             <span>{{ browserDetail.system_language }}</span>
           </el-col>
-          <el-col :span="8" class="text-overflow">
+          <el-col :span="8" class="elColClass">
             <label>浏览器user agent：</label>
-            <span>{{ browserDetail.user_agent }}</span>
+            <el-tooltip placement="top">
+              <div slot="content" class="tooltipContent">{{ browserDetail.user_agent }}</div>
+              <span class="text-overflow">{{ browserDetail.user_agent }}</span>
+            </el-tooltip>
           </el-col>
-          <el-col :span="8" class="text-overflow">
+          <!-- <el-col :span="8" class="text-overflow">
             <label>浏览器模块版本：</label>
-            <span>{{ browserDetail.app_version }}</span>
+            <el-tooltip class="item" effect="dark" :content="browserDetail.app_version" placement="top">
+              <span>{{ browserDetail.app_version }}</span>
+            </el-tooltip>
+          </el-col> -->
+          <el-col :span="8" class="elColClass">
+            <label>浏览器模块版本：：</label>
+            <el-tooltip placement="top">
+              <div slot="content" class="tooltipContent">{{ browserDetail.app_version }}</div>
+              <span class="text-overflow">{{ browserDetail.app_version }}</span>
+            </el-tooltip>
           </el-col>
+
         </el-row>
         <el-row class="margin-bottom15">
           <el-col :span="8" class="text-overflow">
@@ -113,9 +129,20 @@
       </div>
       <div class="panel-content">
         <el-row class="margin-bottom15">
-          <el-col :span="8" class="text-overflow">
+          <!-- <el-col :span="8" class="text-overflow">
             <label>URL：</label>
-            <span :title="pageDetail.url">{{ pageDetail.url }}</span>
+            <el-tooltip class="item" effect="dark" :content="pageDetail.url" placement="top">
+              <span>{{ pageDetail.url }}</span>
+            </el-tooltip>
+
+          </el-col> -->
+
+          <el-col :span="8" class="elColClass">
+            <label>URL：</label>
+            <el-tooltip placement="top">
+              <div slot="content" class="tooltipContent">{{ pageDetail.url }}</div>
+              <span class="text-overflow">{{ pageDetail.url }}</span>
+            </el-tooltip>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>域名：</label>
@@ -127,9 +154,20 @@
           </el-col>
         </el-row>
         <el-row class="margin-bottom15">
-          <el-col :span="8" class="text-overflow">
+          <!-- <el-col :span="8" class="text-overflow">
             <label>页面路径：</label>
-            <span>{{ pageDetail.path_name }}</span>
+            <el-tooltip class="item" effect="dark" :content="pageDetail.path_name" placement="top">
+              <span>{{ pageDetail.path_name }}</span>
+            </el-tooltip>
+
+          </el-col> -->
+
+          <el-col :span="8" class="elColClass">
+            <label>页面路径：</label>
+            <el-tooltip placement="top">
+              <div slot="content" class="tooltipContent">{{ pageDetail.path_name }}</div>
+              <span class="text-overflow">{{ pageDetail.path_name }}</span>
+            </el-tooltip>
           </el-col>
           <el-col :span="8" class="text-overflow">
             <label>页面访问时间：</label>
@@ -170,9 +208,20 @@
                 <label>插件大小：</label>
                 <span>{{ plugin.systemPlugin.fileSize }}</span>
               </el-col>
-              <el-col :span="8" class="text-overflow">
+              <!-- <el-col :span="8" class="text-overflow">
                 <label>插件属性ID：</label>
-                <span>{{ plugin.systemPlugin.progId }}</span>
+
+                <el-tooltip class="item" effect="dark" :content="plugin.systemPlugin.progId" placement="top">
+                  <span>{{ plugin.systemPlugin.progId }}</span>
+                </el-tooltip>
+              </el-col> -->
+
+              <el-col :span="8" class="elColClass">
+                <label>浏览插件属性ID：</label>
+                <el-tooltip placement="top">
+                  <div slot="content" class="tooltipContent">{{ plugin.systemPlugin.progId }}</div>
+                  <span class="text-overflow">{{ plugin.systemPlugin.progId }}</span>
+                </el-tooltip>
               </el-col>
               <el-col :span="8" class="text-overflow">
                 <label>id：</label>
@@ -219,12 +268,20 @@
               </el-col>
             </el-row>
 
-            <el-row class="margin-bottom15">
+            <!-- <el-row class="margin-bottom15">
               <el-col :span="24" class="text-overflow">
                 <label>HTML：</label>
-                <code>{{ plugin.outerHTML }}</code>
+                <el-tooltip class="item" effect="dark" :content="plugin.outerHTML" placement="top">
+                  <code>{{ plugin.outerHTML }}</code>
+                </el-tooltip>
+
               </el-col>
-            </el-row>
+            </el-row> -->
+            <el-collapse accordion>
+              <el-collapse-item title="HTML">
+                <span>{{ plugin.outerHTML }}</span>
+              </el-collapse-item>
+            </el-collapse>
           </el-row>
           <el-row style="background-color: #FeFeFe; padding: 0 15px;border-bottom: 1px solid #DCDFE6;border-top: 1px solid #DCDFE6;height: 40px;line-height: 40px;">
             <el-col :span="24" class="text-overflow">
@@ -373,6 +430,7 @@ export default {
         pageId: this.pageId
       }).then(res => {
         this.pagePluginDetail = res
+        console.log(this.pagePluginDetail)
       })
     },
     getPageRecordList() {
@@ -401,6 +459,10 @@ export default {
 </script>
 
 <style lang='scss'>
+.tooltipContent{
+    width: 300px;
+  }
+
 .dataDetail{
   height: 100%;
   padding: 20px 30px;
@@ -433,12 +495,17 @@ export default {
       }
       span{
         font-size: 14px;
+        flex:1;
+        display: inline-block;
       }
 
     }
   }
   .margin-bottom15{
     margin-bottom: 15px;
+  }
+  .elColClass{
+    display: flex;
   }
   .plugin-row{
     background: #FFFFFF;
@@ -447,5 +514,6 @@ export default {
     margin-bottom: 10px;
     background-color: #DCDFE6;
   }
+
 }
 </style>

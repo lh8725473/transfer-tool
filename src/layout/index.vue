@@ -55,7 +55,7 @@ export default {
         this.$notify({
           title: '分析失败',
           message: res.fileName,
-          type: 'eorror'
+          type: 'error'
         })
       }
     })

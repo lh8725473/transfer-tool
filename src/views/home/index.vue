@@ -351,15 +351,15 @@ export default {
             display: flex;
             .text-01 {
               flex: 1;
-              height: 24px;
-              line-height: 24px;
+              height: 30px;
+              line-height: 16px;
               font-size: 12px;
               font-weight: bold;
             }
             .text-02 {
               flex: 1;
               height: 24px;
-              line-height: 24px;
+              line-height: 16px;
               font-size: 12px;
               font-weight: bold;
             }

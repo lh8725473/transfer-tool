@@ -70,7 +70,7 @@ export const constantRoutes = [
         path: '/packetManage',
         name: 'packetManage',
         component: () => import('@/views/packetManage/index'),
-        meta: { title: '数据包管理', icon: 'shujubao' }
+        meta: { title: '数据管理', icon: 'shujubao' }
       }
     ]
   },

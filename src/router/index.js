@@ -126,7 +126,8 @@ export const constantRoutes = [
         path: '/dataManage',
         name: 'dataManage',
         component: () => import('@/views/dataManage/index'),
-        meta: { title: '插件管理', icon: 'shuju' }
+        meta: { title: '数据详情', icon: 'shuju' },
+        hidden: true
       }
     ]
   },
@@ -138,7 +139,7 @@ export const constantRoutes = [
         path: '/plugin',
         name: 'plugin',
         component: () => import('@/views/plugin/index'),
-        meta: { title: '插件管理2', icon: 'shuju' }
+        meta: { title: '插件管理', icon: 'shuju' }
       }
     ]
   },

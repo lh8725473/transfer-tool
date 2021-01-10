@@ -89,6 +89,15 @@
               <span>{{ plugin.companyName }}</span>
             </el-col>
           </el-row>
+          <el-row class="margin-bottom15">
+
+            <el-collapse accordion>
+              <el-collapse-item title="调用代码：">
+                <span>{{ plugin.outerHTML }}</span>
+              </el-collapse-item>
+            </el-collapse>
+
+          </el-row>
         </el-row>
       </div>
       <div class="functionList">
@@ -162,8 +171,8 @@ export default {
       total: 0,
       plugin: {},
       pluginRecordList: [],
-      pageApiRecordList: [],
-      functionList: null,
+      pageApiRecordList: { 'inUse': [], 'unUse': [] },
+      functionList: { 'inUse': [], 'unUse': [] },
       searchParams: {
         page: 1,
         size: 5,

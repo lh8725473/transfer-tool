@@ -71,6 +71,30 @@ export function getPagetProjectPlugingeList(params) {
   })
 }
 
+/**
+ * 获取项目中插件调用，未调用api列表
+ * @param params
+ */
+export function getPluginFuntionBySite(params) {
+  return request({
+    url: '/project/getPluginFuntionBySite',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取项目中使用指定插件的页面列表
+ * @param params
+ */
+export function getUsePluginPageBySite(params) {
+  return request({
+    url: '/project/getUsePluginPageBySite',
+    method: 'get',
+    params
+  })
+}
+
 // export function addProject(data) {
 //   return request({
 //     url: '/project/add',

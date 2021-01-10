@@ -60,8 +60,10 @@
             <div class="pagination">
               <el-pagination
                 background
+                :page-size="5"
                 layout="total,prev, pager, next"
                 :total="scope.row.total"
+                @current-change="(page) => pageChange2(page, scope.row)"
               />
             </div>
           </template>
@@ -209,9 +211,16 @@ export default {
       this.getSiteRecordList()
     },
 
-    pageChange2(page) {
+    pageChange2(page, row) {
+      console.log(page)
+      console.log(row)
       this.searchPageParams.page = page
-      this.getPageRecordList()
+      this.searchPageParams.siteId = row.siteId
+      getPageList(this.searchPageParams)
+        .then(res => {
+          row.pageRecordList = res.data
+          row.total = res.total
+        })
     },
     handleSizeChange2() {
       this.searchPageParams.page = 1

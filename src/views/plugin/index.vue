@@ -199,6 +199,7 @@ export default {
       display: flex;
       align-items: center;
       margin-right: 15px;
+      cursor: pointer;
       &.actived{
         color: #409EFF;
       }

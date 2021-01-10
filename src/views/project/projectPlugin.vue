@@ -129,7 +129,7 @@
       <div class="site-page-list">
         <div v-for="(item,index) in sitePage" :key="index" class="site-page-item">
           <label>{{ item.page_title }}</label>
-          <el-link type="primary" :href="item.url" target="_blank">{{ item.url }}</el-link>
+          <el-link class="text-overflow" type="primary" :href="item.url" target="_blank">{{ item.url }}</el-link>
         </div>
       </div>
     </div>
@@ -174,6 +174,10 @@ export default {
       getPluginFuntionBySite(this.searchParams)
         .then(res2 => {
           this.functionList = res2
+        })
+      getUsePluginPageBySite(this.searchParams)
+        .then(res => {
+          this.sitePage = res
         })
     },
     getProjectPluginList() {

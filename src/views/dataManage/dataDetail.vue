@@ -285,19 +285,64 @@
           </el-row>
           <el-row style="background-color: #FeFeFe; padding: 0 15px;border-bottom: 1px solid #DCDFE6;border-top: 1px solid #DCDFE6;height: 40px;line-height: 40px;">
             <el-col :span="24" class="text-overflow">
-              <label style="font-weight: bold;color: #666666;">该插件调用API情况：共使用API数量 {{ plugin.functions.length }}</label>
+              <label style="font-weight: bold;color: #666666;">API总数：{{ plugin.functionTotal }}</label>
             </el-col>
           </el-row>
-          <el-row style="background-color: #FAFAFA;">
-            <el-row v-for="item in plugin.functions" :key="item.functionId" style="padding: 0 15px;height: 40px;line-height:40px;border-bottom: 1px solid #DCDFE6;">
-              <el-col :span="12" class="text-overflow">
-                <span>{{ item.functionName }}</span>
-              </el-col>
-              <el-col :span="12" class="text-overflow">
-                <span>调用{{ item.count }}次</span>
-              </el-col>
-            </el-row>
-          </el-row>
+          <div class="panel-header">
+            <el-collapse accordion class="panel" @change="collapseShow(plugin.pluginId)">
+              <el-collapse-item>
+                <template slot="title">
+                  API调用个数：{{ plugin.inUse }}
+                </template>
+
+                <div class="panel-content">
+                  <el-row class="margin-bottom15">
+                    <el-col :span="12" class="text-overflow">
+                      <label>API名称</label>
+                    </el-col>
+                    <el-col :span="12" class="text-overflow">
+                      <label>访问次数</label>
+                    </el-col>
+                  </el-row>
+                  <el-row v-for="(item,index) in pagePluginFunction" :key="index" class="margin-bottom15">
+                    <el-col :span="12" class="text-overflow">
+                      <span>{{ item.functionName }}</span>
+                    </el-col>
+                    <el-col :span="12" class="text-overflow">
+                      <span>{{ item.count }}</span>
+                    </el-col>
+                  </el-row>
+
+                </div>
+              </el-collapse-item>
+
+              <el-collapse-item>
+                <template slot="title">
+                  API未调用个数：{{ plugin.onUse }}
+                </template>
+                <div class="panel-content">
+                  <el-row class="margin-bottom15">
+                    <el-col :span="12" class="text-overflow">
+                      <label>API名称</label>
+                    </el-col>
+                    <el-col :span="12" class="text-overflow">
+                      <label>访问次数</label>
+                    </el-col>
+                  </el-row>
+                  <el-row v-for="(item,index) in pagePluginFunctionUse" :key="index" class="margin-bottom15">
+                    <el-col :span="12" class="text-overflow">
+                      <span>{{ item.functionName }}</span>
+                    </el-col>
+                    <el-col :span="12" class="text-overflow">
+                      <span>{{ item.count }}</span>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-collapse-item>
+
+            </el-collapse>
+          </div>
+
         </el-row>
       </div>
     </div>
@@ -315,16 +360,20 @@
             <label>访问次数</label>
           </el-col>
         </el-row>
-        <el-row v-for="item in apiDetail" :key="item.functionId" class="margin-bottom15">
-          <el-col :span="12" class="text-overflow">
-            <span>{{ item.name }}</span>
-          </el-col>
-          <el-col :span="12" class="text-overflow">
-            <span>{{ item.count }}</span>
-          </el-col>
+
+        <el-row style="background-color: #FAFAFA;">
+          <el-row v-for="item in apiDetail" :key="item.functionId" style="padding: 0 15px;height: 40px;line-height:40px;border-bottom: 1px solid #DCDFE6;">
+            <el-col :span="12" class="text-overflow">
+              <span>{{ item.functionName }}</span>
+            </el-col>
+            <el-col :span="12" class="text-overflow">
+              <span>调用{{ item.count }}次</span>
+            </el-col>
+          </el-row>
+
         </el-row>
-      </div>
-    </div>
+      </div></div>
+
   </div>
 </template>
 
@@ -337,6 +386,8 @@ export default {
   name: 'DataDetail',
   data() {
     return {
+      count: 10,
+      loading: false,
       deviceInfo: {
         machine_name: '-'
       },
@@ -346,6 +397,8 @@ export default {
       apiDetail: {
       },
       pageDetail: {},
+      pagePluginFunction: [],
+      pagePluginFunctionUse: [],
       pagePluginDetail: [],
       total: 0,
       multipleSelection: [],
@@ -376,20 +429,44 @@ export default {
         resourceFileId: null, // 原始文件记录id
         accessStartTime: null, // 页面访问开始时间
         accessEndTime: null, // 页面访问结束时间
-        pageNum: 1,
-        pageSize: 10,
+        page: 1,
+        size: 10,
         sortColumns: '',
         sortDefault: false
+
       }
     }
   },
+  computed: {
+    noMore() {
+      return this.count >= 20
+    },
+    disabled() {
+      return this.loading || this.noMore
+    }
+  },
+
   created() {
     this.deviceinfoId = this.$route.query.deviceinfoId
     this.browserConfigId = this.$route.query.browserConfigId
     this.pageId = this.$route.query.pageId
+    this.pageId = this.$route.query.pageId
     this.init()
   },
   methods: {
+    collapseShow(id, status) {
+      pageService.getPluginFcuntion({
+        pageId: this.pageId, pluginRecordId: id, inUse: true
+      }).then(res => {
+        this.pagePluginFunction = res.data
+      })
+
+      pageService.getPluginFcuntion({
+        pageId: this.pageId, pluginRecordId: id, inUse: false
+      }).then(res => {
+        this.pagePluginFunctionUse = res.data
+      })
+    },
     init() {
       this.getDeviceDetail()
       this.getBrowserDetail()
@@ -404,6 +481,7 @@ export default {
         this.pageDetail = res
       })
     },
+
     getBrowserDetail() {
       browserService.getBrowserDetail({
         browserConfigId: this.browserConfigId
@@ -430,7 +508,6 @@ export default {
         pageId: this.pageId
       }).then(res => {
         this.pagePluginDetail = res
-        console.log(this.pagePluginDetail)
       })
     },
     getPageRecordList() {
@@ -439,21 +516,10 @@ export default {
           this.pageRecordList = res.data
           setTimeout(() => {
             this.total = res.total
-          }, 3000)
+          })
         })
-    },
-    viewDetail(row) {
-      this.$router.push('/admin/authentication/companyAuth?id=' + row.id + '&view=1')
-    },
-    pageChange(page) {
-      this.searchParams.pageNum = page
-      this.getPageRecordList()
-    },
-    onSubmit() {
-    },
-    goCompanyAuth(row) {
-      this.$router.push('/admin/authentication/companyAuth?id=' + row.id)
     }
+
   }
 }
 </script>

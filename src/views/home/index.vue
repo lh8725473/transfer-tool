@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="infos-wrap">
-            <div class="num">{{ countInfo.deviceCount }}</div>
+            <el-link class="num" type="primary" @click="deviceListLink">{{ countInfo.deviceCount }}</el-link>
             <div class="text">接入终端数量</div>
           </div>
         </div>
@@ -178,6 +178,10 @@ export default {
     },
     resourceRecordLink() {
       this.$router.push('/packetManage')
+      this.loading = false
+    },
+    deviceListLink() {
+      this.$router.push('/terminal')
       this.loading = false
     }
 
@@ -351,15 +355,15 @@ export default {
             display: flex;
             .text-01 {
               flex: 1;
-              height: 24px;
-              line-height: 24px;
+              height: 30px;
+              line-height: 16px;
               font-size: 12px;
               font-weight: bold;
             }
             .text-02 {
               flex: 1;
               height: 24px;
-              line-height: 24px;
+              line-height: 16px;
               font-size: 12px;
               font-weight: bold;
             }

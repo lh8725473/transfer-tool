@@ -28,15 +28,12 @@ browserService.getBrowsers = params => {
 }
 
 /*
- * 省数据
- * post /public/city/getAllList
- * params = {
- *  provinceId: 130000
- * }
+ * 获取所有的浏览器信息
+ * post /browser/getBrowser
  */
-browserService.getCityList = params => {
+browserService.getBrowserVersion = params => {
   return service({
-    url: '/public/city/getAllList',
+    url: '/browser/getBrowserVersion',
     method: 'get',
     params
   })

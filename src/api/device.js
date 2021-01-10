@@ -35,9 +35,9 @@ deviceService.getDevice = params => {
  *  provinceId: 130000
  * }
  */
-deviceService.getCityList = params => {
+deviceService.getDeviceList = params => {
   return service({
-    url: '/public/city/getAllList',
+    url: '/device/getDeviceInfo',
     method: 'get',
     params
   })

@@ -53,6 +53,19 @@ pageService.getPageDetailById = data => {
 }
 
 /*
+ * 访问页面插件api记录
+ * post /page/pagePluginDetail
+ * pageId 页面详情记录id
+ */
+pageService.getPluginFcuntion = params => {
+  return service({
+    url: '/page/getPluginFcuntion',
+    method: 'get',
+    params
+  })
+}
+
+/*
  * 获取所有的网站信息
  * get /site/getSite
  */

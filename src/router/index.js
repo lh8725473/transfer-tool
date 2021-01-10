@@ -63,6 +63,42 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/project',
+    component: Layout,
+    children: [
+      {
+        path: '/project',
+        name: 'project',
+        component: () => import('@/views/project/index'),
+        meta: { title: '应用管理', icon: 'project' }
+      }
+    ]
+  },
+  {
+    path: '/pageDetail',
+    name: 'project',
+    component: () => import('@/views/project/pageDetail'),
+    hidden: true
+  },
+  {
+    path: '/pluginDetail',
+    name: 'plugin',
+    component: () => import('@/views/plugin/pluginDetail'),
+    hidden: true
+  },
+  {
+    path: '/terminal',
+    component: Layout,
+    children: [
+      {
+        path: '/terminal',
+        name: 'terminal',
+        component: () => import('@/views/terminal/index'),
+        meta: { title: '终端管理', icon: 'terminal' }
+      }
+    ]
+  },
+  {
     path: '/packetManage',
     component: Layout,
     children: [
@@ -70,7 +106,7 @@ export const constantRoutes = [
         path: '/packetManage',
         name: 'packetManage',
         component: () => import('@/views/packetManage/index'),
-        meta: { title: '数据包管理', icon: 'shujubao' }
+        meta: { title: '数据管理', icon: 'shujubao' }
       }
     ]
   },
@@ -83,6 +119,18 @@ export const constantRoutes = [
         name: 'dataManage',
         component: () => import('@/views/dataManage/index'),
         meta: { title: '插件管理', icon: 'shuju' }
+      }
+    ]
+  },
+  {
+    path: '/plugin',
+    component: Layout,
+    children: [
+      {
+        path: '/plugin',
+        name: 'plugin',
+        component: () => import('@/views/plugin/index'),
+        meta: { title: '插件管理2', icon: 'shuju' }
       }
     ]
   },

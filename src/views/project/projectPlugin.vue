@@ -139,31 +139,13 @@
 
         </el-collapse>
       </div>
-      <div v-if="pageApiRecordList!=null">
-        <el-row>
-
-          <el-col v-for="(item,index) in pageApiRecordList.inUse" :key="index" :span="8">
-            <el-card :body-style="{ padding: '0px' }">
-              <div style="padding: 14px;">
-                <p>{{ item.name }}</p>
-                <p>{{ item.count }}次</p>
-              </div>
-            </el-card>
-          </el-col>
-
-        </el-row>
-
-        <el-row>
-          <el-col v-for="(item,index) in pageApiRecordList.onUse" :key="index" :span="8">
-            <el-card :body-style="{ padding: '0px' }">
-              <div style="padding: 14px;">
-                <p>{{ item.name }}</p>
-                <p>{{ item.count }}次</p>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
+      <!-- 与插件相关的页面列表-->
+      <el-card class="box-card">
+        <div v-for="(item,index) in pageRecordList" :key="index" class="text item">
+          <span>{{ item.page_title }}</span>
+          <a>{{ item.url }}</a>
+        </div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -172,6 +154,8 @@
 import { getProjectPluginByPage, getProjectPluginList } from '@/api/project'
 import { getProjectPluginFunction } from '@/api/project'
 import { getProjectPageFunction } from '@/api/project'
+import { getPluginFuntionBySite } from '@/api/project'
+import { getUsePluginPageBySite } from '@/api/project'
 import _ from 'lodash'
 export default {
   name: 'PluginManage',
@@ -180,15 +164,13 @@ export default {
       total: 0,
       plugin: {},
       pluginRecordList: [],
-      pageApiRecordList: [],
+      pageRecordList: [],
       functionList: null,
       searchParams: {
         page: 1,
         size: 5,
-        pageTitle: null,
-        url: null,
         siteId: null,
-        pathName: null
+        classid: ''
       }
     }
   },
@@ -204,23 +186,17 @@ export default {
         .then(res => {
           console.log(res)
           this.pluginRecordList = res.data
-          // if (this.pluginRecordList.length > 0) {
-          //   this.plugin = this.pluginRecordList[0]
-          //   this.searchParams.classid = this.plugin.classId
-          //   getProjectPluginFunction(this.searchParams)
-          //     .then(res2 => {
-          //       this.functionList = res2
-          //     })
-          // }
-        })
-    },
-
-    getPageApiList() {
-      getProjectPageFunction(this.searchParams)
-        .then(res => {
-          this.pageApiRecordList = res
-          if (res != null) {
-            this.total = res.total
+          if (this.pluginRecordList.length > 0) {
+            this.plugin = this.pluginRecordList[0]
+            this.searchParams.classid = this.plugin.classId
+            getPluginFuntionBySite(this.searchParams)
+              .then(res2 => {
+                this.functionList = res2
+              })
+            getUsePluginPageBySite(this.searchParams)
+              .then(res => {
+                this.pageRecordList = res
+              })
           }
         })
     }

@@ -1,21 +1,19 @@
 <template>
-  <div class="pageDetail">
+  <div class="dataDetail">
     <div class="panel">
       <div class="panel-header">
-        系统已安装插件
+        已安装插件
       </div>
-      <div>
-        <el-row>
-          <el-col v-for="item in pluginRecordList" :key="item.spId" :span="8">
-            <el-card :body-style="{ padding: '0px' }">
-              <div style="padding: 14px;">
-                <p>{{ item.name }}</p>
-                <p>{{ item.pluginFunctionCount }}次</p>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
+      <el-row>
+        <el-col v-for="item in pluginRecordList" :key="item.spId" :span="8">
+          <el-card :body-style="{ padding: '0px' }">
+            <div style="padding: 14px;">
+              <p>{{ item.name }}</p>
+              <p>{{ item.pluginFunctionCount }}次</p>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
 
       <div class="panel-content">
         <el-row class="plugin-row">
@@ -171,7 +169,7 @@
 </template>
 
 <script>
-import { getProjectPluginByPage } from '@/api/project'
+import { getProjectPluginByPage, getProjectPluginList } from '@/api/project'
 import { getProjectPluginFunction } from '@/api/project'
 import { getProjectPageFunction } from '@/api/project'
 import _ from 'lodash'
@@ -180,7 +178,7 @@ export default {
   data() {
     return {
       total: 0,
-      plugin: null,
+      plugin: {},
       pluginRecordList: [],
       pageApiRecordList: [],
       functionList: null,
@@ -190,33 +188,30 @@ export default {
         pageTitle: null,
         url: null,
         siteId: null,
-        pathName: null,
-        classid: ''
+        pathName: null
       }
     }
   },
   created() {
-    this.searchParams.pageTitle = this.$route.query.pageTitle
-    this.searchParams.url = this.$route.query.url
     this.searchParams.siteId = this.$route.query.siteId
-    this.searchParams.pathName = this.$route.query.pathName
-    this.getPagePlugin()
+    this.getProjectPluginList()
     // this.getFunction()
-    this.getPageApiList()
+    // this.getPageApiList()
   },
   methods: {
-    getPagePlugin() {
-      getProjectPluginByPage(this.searchParams)
+    getProjectPluginList() {
+      getProjectPluginList(this.searchParams)
         .then(res => {
+          console.log(res)
           this.pluginRecordList = res.data
-          if (this.pluginRecordList.length > 0) {
-            this.plugin = this.pluginRecordList[0]
-            this.searchParams.classid = this.plugin.classId
-            getProjectPluginFunction(this.searchParams)
-              .then(res2 => {
-                this.functionList = res2
-              })
-          }
+          // if (this.pluginRecordList.length > 0) {
+          //   this.plugin = this.pluginRecordList[0]
+          //   this.searchParams.classid = this.plugin.classId
+          //   getProjectPluginFunction(this.searchParams)
+          //     .then(res2 => {
+          //       this.functionList = res2
+          //     })
+          // }
         })
     },
 
@@ -239,7 +234,7 @@ export default {
     width: 300px;
   }
 
-.pageDetail{
+.dataDetail{
   height: 100%;
   padding: 20px 30px;
   .panel{

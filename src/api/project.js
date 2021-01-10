@@ -63,7 +63,7 @@ export function getProjectPageFunction(params) {
  * 获取项目所有的插件列表
  * @param params
  */
-export function getPagetProjectPlugingeList(params) {
+export function getProjectPluginList(params) {
   return request({
     url: '/project/getProjectPlugin',
     method: 'get',

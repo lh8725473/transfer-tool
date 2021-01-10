@@ -71,14 +71,22 @@ export const constantRoutes = [
         name: 'project',
         component: () => import('@/views/project/index'),
         meta: { title: '应用管理', icon: 'project' }
+      },
+      {
+        path: '/pageDetail',
+        name: 'pageDetail',
+        component: () => import('@/views/project/pageDetail'),
+        meta: { title: '页面插件详情' },
+        hidden: true
+      },
+      {
+        path: '/projectPlugin',
+        name: '',
+        component: () => import('@/views/project/projectPlugin'),
+        meta: { title: '应用管理-已使用插件' },
+        hidden: true
       }
     ]
-  },
-  {
-    path: '/pageDetail',
-    name: 'project',
-    component: () => import('@/views/project/pageDetail'),
-    hidden: true
   },
   {
     path: '/pluginDetail',

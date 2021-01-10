@@ -96,7 +96,7 @@
           label="使用插件个数"
         >
           <template slot="header" slot-scope="scope">
-            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+            <div class="sort-header" @click="changeSort(scope.column.property)">
               使用插件个数
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
@@ -110,6 +110,9 @@
                 <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
               </span>
             </div>
+          </template>
+          <template slot-scope="pageScope">
+            <el-link type="primary" @click="goProjectPlugin(pageScope.row)">{{ pageScope.row.pluginNum }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -127,7 +130,7 @@
           label="访问总数"
         >
           <template slot="header" slot-scope="scope">
-            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+            <div class="sort-header" @click="changeSort(scope.column.property)">
               访问总数
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
@@ -149,7 +152,7 @@
           label="访问终端数"
         >
           <template slot="header" slot-scope="scope">
-            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+            <div class="sort-header" @click="changeSort(scope.column.property)">
               访问终端数
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
@@ -221,6 +224,15 @@ export default {
     this.getSiteRecordList()
   },
   methods: {
+    goProjectPlugin(row) {
+      const params = qs.stringify({
+        siteId: row.siteId,
+        domain: row.domain
+      })
+
+      const routeData = this.$router.resolve({ path: '/projectPlugin?' + params })
+      window.open(routeData.href, '_blank')
+    },
     changeSort(prop) {
       if (this.searchParams.sortColumn === prop) {
         this.searchParams.sortDefault = !this.searchParams.sortDefault
@@ -289,8 +301,6 @@ export default {
       this.getPageRecordList()
     },
     showPageDetail(siteInfo, pageInfo) {
-      console.log(pageInfo)
-      console.log(siteInfo)
       const params = qs.stringify({
         token: localStorage.getItem('token'),
         siteId: siteInfo.siteId,

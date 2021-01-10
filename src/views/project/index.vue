@@ -24,6 +24,7 @@
           <template slot-scope="scope">
             <el-table
               border
+              header-row-class-name="child-header"
               :data="scope.row.pageRecordList"
               style="width: 100%;height: 100%"
             >
@@ -93,7 +94,24 @@
         <el-table-column
           prop="pluginNum"
           label="使用插件个数"
-        />
+        >
+          <template slot="header" slot-scope="scope">
+            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+              使用插件个数
+              <span
+                v-show="searchParams.sortColumn !== scope.column.property"
+              >
+                <i class="el-icon-sort" />
+              </span>
+              <span
+                v-show="searchParams.sortColumn === scope.column.property"
+              >
+                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+              </span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="usePluginPageNum"
           label="使用插件网页个数"
@@ -107,12 +125,46 @@
         <el-table-column
           prop="accessPageNum"
           label="访问总数"
-        />
+        >
+          <template slot="header" slot-scope="scope">
+            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+              访问总数
+              <span
+                v-show="searchParams.sortColumn !== scope.column.property"
+              >
+                <i class="el-icon-sort" />
+              </span>
+              <span
+                v-show="searchParams.sortColumn === scope.column.property"
+              >
+                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+              </span>
+            </div>
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="deviceNum"
           label="访问终端数"
-        />
+        >
+          <template slot="header" slot-scope="scope">
+            <div class="sort-header" @click="changeSort(scope.column.property, false)">
+              访问终端数
+              <span
+                v-show="searchParams.sortColumn !== scope.column.property"
+              >
+                <i class="el-icon-sort" />
+              </span>
+              <span
+                v-show="searchParams.sortColumn === scope.column.property"
+              >
+                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+              </span>
+            </div>
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="createTime"
@@ -156,7 +208,7 @@ export default {
         size: 10,
         searchKey: null,
         sortDefault: true,
-        sortColumn: null
+        sortColumn: 'deviceNum'
       },
       searchPageParams: {
         page: 1,
@@ -169,7 +221,16 @@ export default {
     this.getSiteRecordList()
   },
   methods: {
-
+    changeSort(prop) {
+      if (this.searchParams.sortColumn === prop) {
+        this.searchParams.sortDefault = !this.searchParams.sortDefault
+      } else {
+        this.searchParams.sortColumn = prop
+        this.searchParams.sortDefault = true
+      }
+      this.searchParams.page = 1
+      this.getSiteRecordList()
+    },
     getSiteRecordList() {
       getProjectList(this.searchParams)
         .then(res => {
@@ -252,5 +313,20 @@ export default {
   padding: 20px 30px;
   height: 100%;
 
+}
+.child-header th{
+  background-color: #E5E7EE !important;
+  font-weight: bold !important;
+  color: #555555 !important;
+}
+.el-table th>.cell{
+  font-weight: bold !important;
+  color: #555555 !important;
+}
+.sort-header{
+  cursor: pointer;
+  .el-icon-top, .el-icon-bottom{
+    color: #3680F9;
+  }
 }
 </style>

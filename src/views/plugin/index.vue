@@ -12,21 +12,21 @@
       </el-form>
     </div>
 
-    <div>
-      <el-row>
-        <div style="padding: 14px;">
-          <span>全部：</span>
+    <div class="browser-search">
+      <label>浏览器类型：</label>
+      <div class="browser-list">
+        <div class="all-browser" :class="{'actived': searchParams.bvId === ''}" @click="changebrowser('')">
+          <div>全部</div>
         </div>
-        <el-col v-for="browserVersion in browserVersionList" :key="browserVersion.bv_id" :span="8" style="width:300px">
-          <el-card shadow="hover" :body-style="{ padding: '0px' }">
-            <img :src="browserVersion.logo" class="image">
-            <div style="padding: 14px;">
-              <span>{{ browserVersion.browser_name }} {{ browserVersion.version }}</span>
-
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
+        <div v-for="browserVersion in browserVersionList" :class="{'actived': searchParams.bvId === browserVersion.bv_id}" @click="changebrowser(browserVersion.bv_id)" :key="browserVersion.bv_id" class="browser-item">
+          <el-image
+            style="width: 30px; height: 30px"
+            :src="browserVersion.logo"
+            fit="fill"
+          />
+          <div class="text-overflow" :title="browserVersion.browser_name + browserVersion.version">{{ browserVersion.browser_name }} {{ browserVersion.version }}</div>
+        </div>
+      </div>
     </div>
 
     <div class="table-div">
@@ -114,14 +114,15 @@ export default {
       pageRecordList: [],
       searchParamsBrowser: {
         page: 1,
-        size: 5
+        size: 10
       },
       searchParams: {
         page: 1,
         size: 10,
         searchKey: null,
         sortDefault: true,
-        sortColumn: null
+        sortColumn: null,
+        bvId: ''
       }
     }
   },
@@ -130,6 +131,11 @@ export default {
     this.getPluginRecordList()
   },
   methods: {
+    changebrowser(bvId) {
+      this.searchParams.page = 1
+      this.searchParams.bvId = bvId
+      this.getPluginRecordList()
+    },
     getBrowserVersion() {
       browserService.getBrowserVersion(this.searchParamsBrowser)
         .then(res => {
@@ -181,9 +187,37 @@ export default {
   height: 100%;
   padding: 20px 30px;
   height: 100%;
+  .browser-search{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .browser-list{
+    display: flex;
+    text-align: center;
+    .all-browser{
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+      &.actived{
+        color: #409EFF;
+      }
+      &:hover{
+        color: #409EFF;
+      }
+    }
+    .browser-item{
+      cursor: pointer;
+      margin-right: 15px;
+      max-width: 100px;
+      &.actived{
+        color: #409EFF;
+      }
+      &:hover{
+        color: #409EFF;
+      }
+    }
+  }
 
-}
-.el-card :hover{
-  background-color:#d1d6dc;
 }
 </style>

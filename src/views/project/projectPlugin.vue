@@ -122,10 +122,16 @@
       </div>
     </div>
 
-    <div v-for="(item,index) in sitePage" :key="index">
-      <span>{{ item.page_title }}</span>
-      <span>{{ item.url }}</span>
-
+    <div class="panel">
+      <div class="panel-header">
+        插件安装页面({{ sitePage.length }})
+      </div>
+      <div class="site-page-list">
+        <div v-for="(item,index) in sitePage" :key="index" class="site-page-item">
+          <label>{{ item.page_title }}</label>
+          <el-link type="primary" :href="item.url" target="_blank">{{ item.url }}</el-link>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -220,6 +226,7 @@ export default {
   .pageTitle-url{
     background: #ecf1f8;
     padding: 15px;
+    margin-bottom: 20px;
   }
   .plugin-detail{
     padding: 15px 0;
@@ -308,6 +315,25 @@ export default {
       .el-tag{
         margin-right: 8px;
         margin-bottom: 5px;
+      }
+    }
+  }
+  .site-page-list{
+    margin: 0 -30px;
+    padding: 10px 30px;
+    max-height: 500px;
+    overflow-y: auto;
+    .site-page-item{
+      border-bottom: 1px solid #EBEEF5;
+      margin: 0 -30px;
+      padding: 10px 30px;
+      &:last-child{
+        border-bottom: none;
+      }
+      a{
+        margin-top: 10px;
+        display: block;
+
       }
     }
   }

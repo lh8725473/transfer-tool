@@ -117,7 +117,7 @@
 
           <el-collapse-item>
             <template slot="title">
-              API未调用个数({{ functionList.onUse.length }})
+              API未调用个数({{ functionList.unUse.length }})
             </template>
             <div class="panel-content">
               <el-row class="margin-bottom15">
@@ -128,7 +128,7 @@
                   <label>访问次数</label>
                 </el-col>
               </el-row>
-              <el-row v-for="(item,index) in functionList.onUse" :key="index" class="margin-bottom15">
+              <el-row v-for="(item,index) in functionList.unUse" :key="index" class="margin-bottom15">
                 <el-col :span="12" class="text-overflow">
                   <span>{{ item.function_name }}</span>
                 </el-col>
@@ -156,7 +156,7 @@
         </el-row>
 
         <el-row>
-          <el-col v-for="(item,index) in pageApiRecordList.onUse" :key="index" :span="8">
+          <el-col v-for="(item,index) in pageApiRecordList.unUser" :key="index" :span="8">
             <el-card :body-style="{ padding: '0px' }">
               <div style="padding: 14px;">
                 <p>{{ item.name }}</p>

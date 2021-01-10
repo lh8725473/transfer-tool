@@ -73,7 +73,7 @@
 
           <el-row style="background-color: #FeFeFe; padding: 0 15px;border-bottom: 1px solid #DCDFE6;border-top: 1px solid #DCDFE6;height: 40px;line-height: 40px;">
             <el-col :span="24" class="text-overflow">
-              <label style="font-weight: bold;color: #666666;">API总数({{ functionList.inUse.length + functionList.onUse.length }})</label>
+              <label style="font-weight: bold;color: #666666;">API总数({{ functionList.inUse.length + functionList.unUse.length }})</label>
             </el-col>
           </el-row>
           <div class="panel-header">
@@ -106,7 +106,7 @@
 
               <el-collapse-item>
                 <template slot="title">
-                  API未调用个数({{ functionList.onUse.length }})
+                  API未调用个数({{ functionList.unUse.length }})
                 </template>
                 <div class="panel-content">
                   <el-row class="margin-bottom15">
@@ -117,7 +117,7 @@
                       <label>访问次数</label>
                     </el-col>
                   </el-row>
-                  <el-row v-for="(item,index) in functionList.onUse" :key="index" class="margin-bottom15">
+                  <el-row v-for="(item,index) in functionList.unUse" :key="index" class="margin-bottom15">
                     <el-col :span="12" class="text-overflow">
                       <span>{{ item.function_name }}</span>
                     </el-col>

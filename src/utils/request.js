@@ -3,6 +3,9 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
+window.cancelRequest = []
+const CancelToken = axios.CancelToken
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -14,6 +17,10 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    config.cancelToken = new CancelToken((cancel) => {
+      window.cancelRequest.push(cancel)
+    })
+
     // do something before request is sent
     // 后台token
     const token = localStorage.getItem('token')
@@ -41,13 +48,17 @@ service.interceptors.response.use(
       return response.data.data
     } else {
       if (response.data.status === -6) { // 无权限
+        // 无权限取消后续求情
+        window.cancelRequest.forEach(item => {
+          item()
+        })
         Message({
           message: response.data.message,
           type: 'error'
         })
         location.href = '#/login'
         localStorage.removeItem('token')
-        store.dispatch('updateUser', {})
+        // store.dispatch('updateUser', {})
         return Promise.reject(response)
       } else {
         Message({

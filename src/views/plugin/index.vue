@@ -24,7 +24,7 @@
             :src="browserVersion.logo"
             fit="fill"
           />
-          <div class="text-overflow" :title="browserVersion.browser_name + browserVersion.version">{{ browserVersion.browser_name }} {{ browserVersion.version }}</div>
+          <div class="text-overflow" :title="browserVersion.browser_alias + browserVersion.version">{{ browserVersion.browser_alias }} {{ browserVersion.version }}</div>
         </div>
       </div>
     </div>

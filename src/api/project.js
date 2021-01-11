@@ -95,6 +95,18 @@ export function getUsePluginPageBySite(params) {
   })
 }
 
+/**
+ * 获取项目中指定页面的内容
+ * @param params
+ */
+export function getPageBySiteId(params) {
+  return request({
+    url: '/project/getPageBySiteId',
+    method: 'get',
+    params
+  })
+}
+
 // export function addProject(data) {
 //   return request({
 //     url: '/project/add',

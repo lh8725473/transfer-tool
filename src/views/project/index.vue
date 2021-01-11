@@ -3,7 +3,7 @@
     <div class="seach-div">
       <el-form :inline="true" :model="searchParams" class="demo-form-inline" size="mini">
         <el-form-item label="">
-          <el-input v-model="searchParams.searchKey" placeholder="应用名称/网站地址" suffix-icon="el-icon-search" />
+          <el-input v-model="searchParams.searchKey" clearable placeholder="应用名称/网站地址" suffix-icon="el-icon-search" @change="onSubmit" />
         </el-form-item>
 
         <el-form-item>
@@ -37,22 +37,30 @@
               </el-table-column>
               <el-table-column
                 label="URL"
-                prop="url"
-              />
+              >
+                <template slot-scope="pageScope">
+                  <el-link type="primary" @click="showHostDetail(pageScope.row.url)">{{ pageScope.row.url }}</el-link>
+                </template>
+              </el-table-column>
+
               <el-table-column
                 label="页面路径"
                 prop="pathName"
               />
               <el-table-column
-                label="使用插件数量"
+                label="插件数量"
                 prop="pluginNum"
               />
               <el-table-column
-                label="页面访问次数"
+                prop="functionNum"
+                label="特有API数"
+              />
+              <el-table-column
+                label="访问次数"
                 prop="accessPageNum"
               />
               <el-table-column
-                label="访问终端数"
+                label="终端数"
                 prop="deviceNum"
               />
 
@@ -74,14 +82,22 @@
           width="50"
           align="center"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="siteId"
           label="编号"
-        />
+        /> -->
         <el-table-column
-          prop="logo"
+
           label="应用图标"
-        />
+        >
+          <template slot-scope="scope">
+
+            <el-image
+              style="width: 60px; height: 50px"
+              :src="scope.row.logo"
+              fit="fill"
+            />
+          </template></el-table-column>
 
         <el-table-column
           prop="domain"
@@ -90,14 +106,18 @@
         <el-table-column
           prop="host"
           label="应用地址"
-        />
+        >
+          <template slot-scope="siteScope">
+            <el-link type="primary" @click="showHostDetail(siteScope.row.protocol +'://'+siteScope.row.host)">{{ siteScope.row.host }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="pluginNum"
-          label="使用插件个数"
+          label="插件个数"
         >
           <template slot="header" slot-scope="scope">
             <div class="sort-header" @click="changeSort(scope.column.property)">
-              使用插件个数
+              插件个数
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
               >
@@ -116,8 +136,8 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="usePluginPageNum"
-          label="使用插件网页个数"
+          prop="functionNum"
+          label="特有API数"
         />
 
         <el-table-column
@@ -149,11 +169,11 @@
 
         <el-table-column
           prop="deviceNum"
-          label="访问终端数"
+          label="终端数"
         >
           <template slot="header" slot-scope="scope">
             <div class="sort-header" @click="changeSort(scope.column.property)">
-              访问终端数
+              终端数
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
               >
@@ -171,7 +191,7 @@
 
         <el-table-column
           prop="createTime"
-          label="更新时间"
+          label="导入时间"
         />
       </el-table>
 
@@ -304,13 +324,15 @@ export default {
       const params = qs.stringify({
         token: localStorage.getItem('token'),
         siteId: siteInfo.siteId,
-        pageTitle: pageInfo.pageTitle,
-        pathName: pageInfo.pathName,
-        url: pageInfo.url
+        pathName: pageInfo.pathName
       })
 
       const routeData = this.$router.resolve({ path: '/pageDetail?' + params })
       window.open(routeData.href, '_blank')
+    },
+
+    showHostDetail(url) {
+      window.open(url, '_blank')
     }
 
   }
@@ -339,4 +361,5 @@ export default {
     color: #3680F9;
   }
 }
+
 </style>

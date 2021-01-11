@@ -1,8 +1,8 @@
 <template>
   <div class="pageDetail">
     <div class="pageTitle-url">
-      <label>{{ searchParams.pageTitle }}</label>
-      <label>{{ searchParams.url }}</label>
+      <label>{{ pageInfo.pageTitle }}</label>
+      <label>{{  pageInfo.url }}</label>
     </div>
     <div class="panel">
       <div class="panel-header">
@@ -163,6 +163,7 @@
 import { getProjectPluginByPage } from '@/api/project'
 import { getProjectPluginFunction } from '@/api/project'
 import { getProjectPageFunction } from '@/api/project'
+import { getPageBySiteId } from '@/api/project'
 import _ from 'lodash'
 export default {
   name: 'PluginManage',
@@ -170,6 +171,7 @@ export default {
     return {
       total: 0,
       plugin: {},
+      pageInfo: {},
       pluginRecordList: [],
       pageApiRecordList: { 'inUse': [], 'unUse': [] },
       functionList: { 'inUse': [], 'unUse': [] },
@@ -189,11 +191,18 @@ export default {
     this.searchParams.url = this.$route.query.url
     this.searchParams.siteId = this.$route.query.siteId
     this.searchParams.pathName = this.$route.query.pathName
+    this.getPageBySiteId()
     this.getPagePlugin()
     // this.getFunction()
     this.getPageApiList()
   },
   methods: {
+    getPageBySiteId() {
+      getPageBySiteId({ siteId: this.searchParams.siteId, pathName: this.searchParams.pathName })
+        .then(res => {
+          this.pageInfo = res
+        })
+    },
     changePlugin(row) {
       _.forEach(this.pluginRecordList, item => {
         item.selected = false

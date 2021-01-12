@@ -76,7 +76,7 @@ export const constantRoutes = [
         path: '/pageDetail',
         name: 'pageDetail',
         component: () => import('@/views/project/pageDetail'),
-        meta: { title: '页面插件详情' },
+        meta: { title: '应用管理 - 页面插件详情' },
         hidden: true
       },
       {

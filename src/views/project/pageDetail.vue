@@ -129,38 +129,41 @@
         </el-row>
       </div>
     </div>
-    <!-- <div class="page-api-recordList panel">
+    <div class="page-api-recordList panel">
       <div class="panel-header">
-        浏览器兼容API({{ pageApiRecordList.inUse.length + pageApiRecordList.unUse.length }})
+        浏览器特有API({{ pageApiTotal }})
       </div>
-      <el-row class="page-api-recordList-inUse">
-        <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）: </label>
-        <el-tag
-          v-for="(item,index) in pageApiRecordList.inUse"
-          :key="index"
-          type="info"
-          effect="dark"
-          size="medium"
-        >
-          {{ item.name }} (调用{{ item.count }}次)
-        </el-tag>
-        <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
-      </el-row>
-
-      <el-row class="page-api-recordList-unUse">
-        <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）: </label>
-        <el-tag
-          v-for="(item,index) in pageApiRecordList.unUse"
-          :key="index"
-          type="info"
-          effect="dark"
-          size="medium"
-        >
-          {{ item.name }} (调用{{ item.count }}次)
-        </el-tag>
-        <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
-      </el-row>
-    </div> -->
+      <div class="inUsefunctionList">
+        <el-row>
+          <label>调用API（{{ pageApiInUseTotal }}）: </label>
+          <el-tag
+            v-for="(item,index) in pageApiInUseList"
+            :key="index"
+            type="info"
+            effect="dark"
+            size="medium"
+          >
+            {{ item.function_name }} (调用{{ item.count }}次)
+          </el-tag>
+          <el-button v-show="!morePageFunction" type="text" size="medium" @click="getMorePageFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePageFunction" type="text" size="medium" @click="getMorePageFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
+        </el-row>
+        <el-row>
+          <label>未调用API（{{ pageApiTotal - pageApiInUseTotal }}）:</label>
+          <el-tag
+            v-for="(item,index) in pageApiUnUseList"
+            :key="index"
+            type="info"
+            effect="dark"
+            size="medium"
+          >
+            {{ item.function_name }} (调用{{ item.count }}次)
+          </el-tag>
+          <el-button v-show="!morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
+        </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -180,10 +183,17 @@ export default {
       moreOuterHTML: false,
       morePluginFunction: false,
       morePluginFunctionUnUse: false,
+
+      morePageFunction: false,
+      morePageFunctionUnUse: false,
+
       total: 0,
       pluginFunctionInUseTotal: 0, // 插件调用api总数
       pluginFunctionunUseTotal: 0, // 插件未调用api总数
       pluginFunctionCount: 0,
+      pageApiInUseTotal: 0, // 页面api调用总数
+      pageApiTotal: 0, // 页面api总数
+
       plugin: {
         outerHTML: ''
       }, // 插件详情
@@ -192,6 +202,8 @@ export default {
       pageApiRecordList: { 'inUse': [], 'unUse': [] },
       inUsefunctionList: [],
       unUsefunctionList: [],
+      pageApiInUseList: [], // 页面特有api 调用列表
+      pageApiUnUseList: [], // 页面特有api 未调用列表
       searchParams: {
         page: 1,
         size: 5,
@@ -214,6 +226,20 @@ export default {
         pathName: null,
         classid: '',
         type: 'unUse'
+      },
+      searchPageFunctionInUseParams: { // 查询页面api未调用参数
+        page: 1,
+        size: 2,
+        siteId: null,
+        pathName: null,
+        type: 'inUse'
+      },
+      searchPageFunctionUnUseParams: { // 查询页面api调用参数
+        page: 0,
+        size: 5,
+        siteId: null,
+        pathName: null,
+        type: 'unUse'
       }
     }
   },
@@ -227,8 +253,15 @@ export default {
     this.searchPluginFunctionUnUseParams.siteId = this.$route.query.siteId
     this.searchPluginFunctionUnUseParams.pathName = this.$route.query.pathName
 
+    this.searchPageFunctionInUseParams.siteId = this.$route.query.siteId
+    this.searchPageFunctionInUseParams.pathName = this.$route.query.pathName
+
+    this.searchPageFunctionUnUseParams.siteId = this.$route.query.siteId
+    this.searchPageFunctionUnUseParams.pathName = this.$route.query.pathName
+
     this.getPageBySiteId()
     this.getPagePlugin()
+    this.getPageApiTotal()
     this.getPageApiList()
   },
   methods: {
@@ -250,6 +283,9 @@ export default {
       this.moreOuterHTML = false
       this.morePluginFunction = false
       this.morePluginFunctionUnUse = false
+
+      this.morePageFunction = false
+      this.morePageFunctionUnUse = false
       // this.searchPluginFunctionParams.page = 1
       // this.searchPluginFunctionUnUseParams.page = 1
       this.getPluginInfo() // 获取插件详细信息
@@ -335,11 +371,49 @@ export default {
     getPageApiList() {
       getProjectPageFunction(this.searchParams)
         .then(res => {
-          this.pageApiRecordList = res
-          if (res != null) {
-            // this.total = res.total
-          }
+          this.pageApiInUseList = res.data
+          this.pageApiInUseTotal = res.total
         })
+    },
+
+    getPageApiTotal() {
+      this.searchPageFunctionInUseParams.type = 'all'
+      getProjectPageFunction(this.searchPageFunctionInUseParams)
+        .then(res => {
+          this.pageApiTotal = res.total
+        })
+    },
+
+    getMorePageFunction(flag) {
+      if (flag) {
+        this.searchPageFunctionInUseParams.size = 999
+      } else {
+        this.searchPageFunctionInUseParams.size = 5
+      }
+      this.morePageFunction = flag
+      this.searchPageFunctionInUseParams.type = 'inUse'
+      getProjectPageFunction(this.searchParams)
+        .then(res => {
+          this.pageApiInUseList = res.data
+          this.pageApiInUseTotal = res.total
+        })
+    },
+
+    getMorePageFunctionUnUse(flag) {
+      this.searchPageFunctionUnUseParams.type = 'unUse'
+      if (flag) {
+        this.searchPageFunctionUnUseParams.size = 999
+        getProjectPageFunction(this.searchPageFunctionUnUseParams)
+          .then(res => {
+            this.pageApiUnUseList = res.data
+          })
+      } else {
+        this.pageApiUnUseList = []
+      }
+      this.morePageFunctionUnUse = flag
+
+      // this.searchPluginFunctionUnUseParams.page++
+      // this.searchPluginFunctionUnUseParams.size = this.pluginFunctionCount - this.pluginFunctionInUseTotal
     },
     getPluginInfo() {
       getPluginById(this.searchParams)

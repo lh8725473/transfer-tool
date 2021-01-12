@@ -14,11 +14,14 @@
 
     <div class="table-div">
       <el-table
-
+        ref="exTable"
         :data="siteRecordList"
+        row-key="siteId"
+        :expand-row-keys="expandRowKeys"
         style="width: 100%;height: 100%"
         @selection-change="handleSelectionChange"
         @expand-change="exChange"
+        @cell-click="cellClick"
       >
         <el-table-column type="expand">
           <template slot-scope="scope">
@@ -121,13 +124,13 @@
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
               >
-                <i class="el-icon-sort" />
+                <i class="el-icon-bottom" />
               </span>
               <span
                 v-show="searchParams.sortColumn === scope.column.property"
               >
-                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
-                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+                <i v-show="!searchParams.sortDefault" class="el-icon-top actived" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom actived" />
               </span>
             </div>
           </template>
@@ -155,13 +158,13 @@
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
               >
-                <i class="el-icon-sort" />
+                <i class="el-icon-bottom" />
               </span>
               <span
                 v-show="searchParams.sortColumn === scope.column.property"
               >
-                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
-                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+                <i v-show="!searchParams.sortDefault" class="el-icon-top actived" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom actived" />
               </span>
             </div>
           </template>
@@ -177,13 +180,13 @@
               <span
                 v-show="searchParams.sortColumn !== scope.column.property"
               >
-                <i class="el-icon-sort" />
+                <i class="el-icon-bottom" />
               </span>
               <span
                 v-show="searchParams.sortColumn === scope.column.property"
               >
-                <i v-show="!searchParams.sortDefault" class="el-icon-top" />
-                <i v-show="searchParams.sortDefault" class="el-icon-bottom" />
+                <i v-show="!searchParams.sortDefault" class="el-icon-top actived" />
+                <i v-show="searchParams.sortDefault" class="el-icon-bottom actived" />
               </span>
             </div>
           </template>
@@ -226,6 +229,7 @@ export default {
       total: 0,
       siteRecordList: [],
       pageRecordList: [],
+      expandRowKeys: [],
       searchParams: {
         page: 1,
         size: 10,
@@ -244,6 +248,12 @@ export default {
     this.getSiteRecordList()
   },
   methods: {
+    cellClick(row, column, cell, event) {
+      console.log(row)
+      console.log(column)
+      console.log(cell)
+      console.log(event)
+    },
     goProjectPlugin(row) {
       const params = qs.stringify({
         siteId: row.siteId,
@@ -280,6 +290,13 @@ export default {
     },
     exChange(row, expandedRows) {
       if (expandedRows.length > 0) {
+        this.expandRowKeys = [row.siteId]
+      } else {
+        this.expandRowKeys = []
+      }
+      console.log('exChange')
+      console.log(expandedRows)
+      if (expandedRows.length > 0) {
         this.searchPageParams.siteId = row.siteId
         getPageList(this.searchPageParams)
           .then(res => {
@@ -290,6 +307,11 @@ export default {
         this.searchPageParams.siteId = null
         // this.pageRecordList = []
       }
+      // _.forEach(expandedRows, expandedRow => {
+      //   if (expandedRow.siteId !== row.siteId) {
+      //     this.$refs.exTable.toggleRowExpansion(expandedRow, false)
+      //   }
+      // })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -343,6 +365,7 @@ export default {
 .packetManage{
   height: 100%;
   padding: 20px 30px;
+  background-color: #eef0f7;
   height: 100%;
 
 }
@@ -358,7 +381,9 @@ export default {
 .sort-header{
   cursor: pointer;
   .el-icon-top, .el-icon-bottom{
-    color: #3680F9;
+    &.actived{
+      color: #3680F9;
+    }
   }
 }
 

@@ -124,11 +124,12 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="!morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
     </div>
-    <div class="page-api-recordList panel">
+    <!-- <div class="page-api-recordList panel">
       <div class="panel-header">
         浏览器兼容API({{ pageApiRecordList.inUse.length + pageApiRecordList.unUse.length }})
       </div>
@@ -159,7 +160,7 @@
         </el-tag>
         <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
       </el-row>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -178,6 +179,7 @@ export default {
     return {
       moreOuterHTML: false,
       morePluginFunction: false,
+      morePluginFunctionUnUse: false,
       total: 0,
       pluginFunctionInUseTotal: 0, // 插件调用api总数
       pluginFunctionunUseTotal: 0, // 插件未调用api总数
@@ -206,7 +208,7 @@ export default {
         type: 'inUse'
       },
       searchPluginFunctionUnUseParams: { // 查询api调用未调用参数
-        page: 0,
+        page: 1,
         size: 5,
         siteId: null,
         pathName: null,
@@ -227,8 +229,6 @@ export default {
 
     this.getPageBySiteId()
     this.getPagePlugin()
-    // this.getFunction()
-
     this.getPageApiList()
   },
   methods: {
@@ -246,8 +246,12 @@ export default {
       this.searchParams.classid = row.classId
       this.searchPluginFunctionParams.classid = row.classId
       this.searchPluginFunctionUnUseParams.classid = row.classId
-      this.searchPluginFunctionParams.page = 1
-      this.searchPluginFunctionUnUseParams.page = 0
+
+      this.moreOuterHTML = false
+      this.morePluginFunction = false
+      this.morePluginFunctionUnUse = false
+      // this.searchPluginFunctionParams.page = 1
+      // this.searchPluginFunctionUnUseParams.page = 1
       this.getPluginInfo() // 获取插件详细信息
       this.getProjectPluginFunctionCount() // 获取插件所有api个数
       getProjectPluginFunction(this.searchParams) // 查询插件使用api记录
@@ -312,17 +316,21 @@ export default {
         })
     },
 
-    getMorePluginFunctionUnUse() {
+    getMorePluginFunctionUnUse(flag) {
       this.searchPluginFunctionUnUseParams.type = 'unUse'
-      this.searchPluginFunctionUnUseParams.page++
-      this.searchPluginFunctionUnUseParams.size = this.pluginFunctionCount - this.pluginFunctionInUseTotal
-      getProjectPluginFunction(this.searchPluginFunctionUnUseParams)
-        .then(res => {
-          _.forEach(res.data, item => {
-            this.unUsefunctionList.push(item)
+      if (flag) {
+        this.searchPluginFunctionUnUseParams.size = 999
+        getProjectPluginFunction(this.searchPluginFunctionUnUseParams)
+          .then(res => {
+            this.unUsefunctionList = res.data
           })
-          this.pluginFunctionUnUseTotal = res.total
-        })
+      } else {
+        this.unUsefunctionList = []
+      }
+      this.morePluginFunctionUnUse = flag
+
+      // this.searchPluginFunctionUnUseParams.page++
+      // this.searchPluginFunctionUnUseParams.size = this.pluginFunctionCount - this.pluginFunctionInUseTotal
     },
     getPageApiList() {
       getProjectPageFunction(this.searchParams)

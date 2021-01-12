@@ -122,7 +122,7 @@
           </el-tag>
         </el-row>
         <el-row>
-          <label>未调用API（{{ pluginFunctionUnUseTotal }}）:</label>
+          <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）:</label>
           <el-tag
             v-for="(item,index) in unUsefunctionList"
             :key="index"
@@ -188,7 +188,7 @@ export default {
     return {
       total: 0,
       pluginFunctionInUseTotal: 0, // 插件调用api总数
-      pluginFunctionunUseTotal: 0, // 调用未调用api总数
+      pluginFunctionunUseTotal: 0, // 插件未调用api总数
       pluginFunctionCount: 0,
       plugin: {}, // 插件详情
       pageInfo: {}, // 页面详情
@@ -252,12 +252,16 @@ export default {
       this.searchParams.classid = row.classId
       this.searchPluginFunctionParams.classid = row.classId
       this.searchPluginFunctionUnUseParams.classid = row.classId
+      this.searchPluginFunctionParams.page = 1
+      this.searchPluginFunctionUnUseParams.page = 0
       this.getPluginInfo() // 获取插件详细信息
       this.getProjectPluginFunctionCount() // 获取插件所有api个数
       getProjectPluginFunction(this.searchParams) // 查询插件使用api记录
         .then(res2 => {
           if (res2 != null) {
             this.inUsefunctionList = res2.data
+            this.unUsefunctionList = []
+
             this.pluginFunctionInUseTotal = res2.total
             this.pluginFunctionUnUseTotal = this.pluginFunctionCount - this.pluginFunctionInUseTotal
           }

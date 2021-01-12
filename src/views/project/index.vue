@@ -19,6 +19,7 @@
         row-key="siteId"
         :expand-row-keys="expandRowKeys"
         style="width: 100%;height: 100%"
+
         @selection-change="handleSelectionChange"
         @expand-change="exChange"
         @cell-click="cellClick"
@@ -33,15 +34,19 @@
             >
               <el-table-column
                 label="页面标题"
+                :show-overflow-tooltip="true"
               >
                 <template slot-scope="pageScope">
                   <el-link type="primary" @click="showPageDetail(scope.row,pageScope.row)">{{ pageScope.row.pageTitle }}</el-link>
                 </template>
               </el-table-column>
               <el-table-column
+
                 label="URL"
+                :show-overflow-tooltip="true"
               >
                 <template slot-scope="pageScope">
+
                   <el-link type="primary" @click="showHostDetail(pageScope.row.url)">{{ pageScope.row.url }}</el-link>
                 </template>
               </el-table-column>
@@ -49,6 +54,7 @@
               <el-table-column
                 label="页面路径"
                 prop="pathName"
+                :show-overflow-tooltip="true"
               />
               <el-table-column
                 label="插件数量"
@@ -96,7 +102,7 @@
           <template slot-scope="scope">
 
             <el-image
-              style="width: 60px; height: 50px"
+              style="width: 31px; height: 34px"
               :src="scope.row.logo"
               fit="fill"
             />
@@ -105,10 +111,12 @@
         <el-table-column
           prop="domain"
           label="应用名称"
+          :show-overflow-tooltip="true"
         />
         <el-table-column
           prop="host"
           label="应用地址"
+          :show-overflow-tooltip="true"
         >
           <template slot-scope="siteScope">
             <el-link type="primary" @click="showHostDetail(siteScope.row.protocol +'://'+siteScope.row.host)">{{ siteScope.row.host }}</el-link>
@@ -279,6 +287,7 @@ export default {
           _.forEach(res.data, (page) => {
             page.pageRecordList = []
             page.total = 0
+            page.expanded = true
           })
           this.siteRecordList = res.data
           this.total = res.total
@@ -302,6 +311,7 @@ export default {
           .then(res => {
             row.pageRecordList = res.data
             row.total = res.total
+            row.expanded = true
           })
       } else {
         this.searchPageParams.siteId = null
@@ -385,6 +395,10 @@ export default {
       color: #3680F9;
     }
   }
+}
+.tooltipContent{
+  width: 200px;
+
 }
 
 </style>

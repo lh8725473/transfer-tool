@@ -107,6 +107,30 @@ export function getPageBySiteId(params) {
   })
 }
 
+/**
+ * 获取项目中指定页面指定插件的内容
+ * @param params
+ */
+export function getPluginById(params) {
+  return request({
+    url: '/project/getPluginById',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ *获取页面插件所有api总数
+ * @param params
+ */
+export function getProjectPluginFunctionCount(params) {
+  return request({
+    url: '/project/getProjectPluginFunctionCount',
+    method: 'get',
+    params
+  })
+}
+
 // export function addProject(data) {
 //   return request({
 //     url: '/project/add',

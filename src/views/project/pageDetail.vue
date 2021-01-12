@@ -2,7 +2,7 @@
   <div class="pageDetail">
     <div class="pageTitle-url">
       <label>{{ pageInfo.pageTitle }}</label>
-      <label>{{  pageInfo.url }}</label>
+      <label>{{ pageInfo.url }}</label>
     </div>
     <div class="panel">
       <div class="panel-header">
@@ -100,11 +100,11 @@
           </el-row>
         </el-row>
       </div>
-      <div class="functionList">
+      <div class="inUsefunctionList">
         <el-row>
-          <label>调用API（{{ functionList.inUse.length }}）:</label>
+          <label>调用API（{{ inUsefunctionList.length }}）:</label>
           <el-tag
-            v-for="(item,index) in functionList.inUse"
+            v-for="(item,index) in inUsefunctionList"
             :key="index"
             type="''"
             effect="plain"
@@ -114,9 +114,9 @@
           </el-tag>
         </el-row>
         <el-row>
-          <label>未调用API（{{ functionList.unUse.length }}）:</label>
+          <label @click="showPluginFunctionUnUse">未调用API（{{ pluginFunctionCount - inUsefunctionList.length }}）:</label>
           <el-tag
-            v-for="(item,index) in functionList.unUse"
+            v-for="(item,index) in unUsefunctionList"
             :key="index"
             type="''"
             effect="plain"
@@ -164,36 +164,39 @@ import { getProjectPluginByPage } from '@/api/project'
 import { getProjectPluginFunction } from '@/api/project'
 import { getProjectPageFunction } from '@/api/project'
 import { getPageBySiteId } from '@/api/project'
+import { getPluginById } from '@/api/project'
+import { getProjectPluginFunctionCount } from '@/api/project'
+
 import _ from 'lodash'
 export default {
   name: 'PluginManage',
   data() {
     return {
       total: 0,
+      pluginFunctionCount: 0,
       plugin: {},
       pageInfo: {},
       pluginRecordList: [],
       pageApiRecordList: { 'inUse': [], 'unUse': [] },
-      functionList: { 'inUse': [], 'unUse': [] },
+      inUsefunctionList: [],
+      unUsefunctionList: [],
       searchParams: {
         page: 1,
         size: 5,
-        pageTitle: null,
-        url: null,
         siteId: null,
         pathName: null,
-        classid: ''
+        classid: '',
+        type: 'inUse'
       }
     }
   },
   created() {
-    this.searchParams.pageTitle = this.$route.query.pageTitle
-    this.searchParams.url = this.$route.query.url
     this.searchParams.siteId = this.$route.query.siteId
     this.searchParams.pathName = this.$route.query.pathName
     this.getPageBySiteId()
     this.getPagePlugin()
     // this.getFunction()
+
     this.getPageApiList()
   },
   methods: {
@@ -208,11 +211,14 @@ export default {
         item.selected = false
       })
       row.selected = true
-      this.plugin = row
-      this.searchParams.classid = this.plugin.classId
-      getProjectPluginFunction(this.searchParams)
+      this.searchParams.classid = row.classId
+      this.getPluginInfo() // 获取插件详细信息
+      this.getProjectPluginFunctionCount() // 获取插件所有api个数
+      getProjectPluginFunction(this.searchParams) // 查询插件使用api记录
         .then(res2 => {
-          this.functionList = res2
+          if (res2 != null) {
+            this.inUsefunctionList = res2
+          }
         })
     },
     getPagePlugin() {
@@ -225,11 +231,14 @@ export default {
           res.data[0].selected = true
           this.pluginRecordList = res.data
           if (this.pluginRecordList.length > 0) {
-            this.plugin = this.pluginRecordList[0]
-            this.searchParams.classid = this.plugin.classId
+            this.searchParams.classid = this.pluginRecordList[0].classId
+            this.getPluginInfo()
+            this.getProjectPluginFunctionCount()
             getProjectPluginFunction(this.searchParams)
               .then(res2 => {
-                this.functionList = res2
+                if (res2 != null) {
+                  this.inUsefunctionList = res2
+                }
               })
           }
         })
@@ -252,6 +261,26 @@ export default {
           if (res != null) {
             // this.total = res.total
           }
+        })
+    },
+    getPluginInfo() {
+      getPluginById(this.searchParams)
+        .then(res => {
+          this.plugin = res
+        })
+    },
+    showPluginFunctionUnUse() {
+      this.searchParams.type = 'unUse'
+      getProjectPluginFunction(this.searchParams)
+        .then(res => {
+          this.unUsefunctionList = res
+        })
+      // this.searchParams.type = 'inUse'
+    },
+    getProjectPluginFunctionCount() {
+      getProjectPluginFunctionCount(this.searchParams)
+        .then(res => {
+          this.pluginFunctionCount = res.count
         })
     }
 

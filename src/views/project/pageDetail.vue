@@ -90,57 +90,41 @@
             </el-col>
           </el-row>
           <el-row class="margin-bottom15">
-
-            <el-collapse accordion>
-              <el-collapse-item title="调用代码：">
-                <span>{{ plugin.outerHTML }}</span>
-              </el-collapse-item>
-            </el-collapse>
-
+            <el-col :span="24" @click="getMoreOuterHTML(false)">
+              <label>调用代码：</label>
+              <span v-show="!moreOuterHTML">{{ plugin.outerHTML.substring(0, 20) }}... <el-button type="text" size="medium" @click="getMoreOuterHTML(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button></span>
+              <span v-show="moreOuterHTML">{{ plugin.outerHTML }}<el-button type="text" size="medium" @click="getMoreOuterHTML(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button></span>
+            </el-col>
           </el-row>
         </el-row>
       </div>
       <div class="inUsefunctionList">
         <el-row>
-          <label>调用API（{{ pluginFunctionInUseTotal }}）:</label>
+          <label>调用API（{{ pluginFunctionInUseTotal }}）: </label>
           <el-tag
             v-for="(item,index) in inUsefunctionList"
             :key="index"
-            type="''"
-            effect="plain"
+            type="info"
+            effect="dark"
             size="medium"
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-tag
-            v-show="inUsefunctionList.length < pluginFunctionInUseTotal "
-            type="''"
-            effect="plain"
-            @click="getMorePluginFunction"
-          >
-            更多...
-          </el-tag>
+          <el-button v-show="!morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
         <el-row>
           <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）:</label>
           <el-tag
             v-for="(item,index) in unUsefunctionList"
             :key="index"
-            type="''"
-            effect="plain"
+            type="info"
+            effect="dark"
             size="medium"
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-
-          <el-tag
-            v-show="unUsefunctionList.length < pluginFunctionCount - pluginFunctionInUseTotal"
-            type="''"
-            effect="plain"
-            @click="getMorePluginFunctionUnUse"
-          >
-            更多...
-          </el-tag>
+          <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
         </el-row>
       </div>
     </div>
@@ -149,25 +133,31 @@
         浏览器兼容API({{ pageApiRecordList.inUse.length + pageApiRecordList.unUse.length }})
       </div>
       <el-row class="page-api-recordList-inUse">
+        <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）: </label>
         <el-tag
           v-for="(item,index) in pageApiRecordList.inUse"
           :key="index"
-          type="''"
-          effect="plain"
+          type="info"
+          effect="dark"
+          size="medium"
         >
           {{ item.name }} (调用{{ item.count }}次)
         </el-tag>
+        <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
       </el-row>
 
       <el-row class="page-api-recordList-unUse">
+        <label>未调用API（{{ pluginFunctionCount - pluginFunctionInUseTotal }}）: </label>
         <el-tag
           v-for="(item,index) in pageApiRecordList.unUse"
           :key="index"
-          type="''"
-          effect="plain"
+          type="info"
+          effect="dark"
+          size="medium"
         >
           {{ item.name }} (调用{{ item.count }}次)
         </el-tag>
+        <el-button type="text" size="medium" @click="getMorePluginFunction">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
       </el-row>
     </div>
   </div>
@@ -186,11 +176,15 @@ export default {
   name: 'PluginManage',
   data() {
     return {
+      moreOuterHTML: false,
+      morePluginFunction: false,
       total: 0,
       pluginFunctionInUseTotal: 0, // 插件调用api总数
       pluginFunctionunUseTotal: 0, // 插件未调用api总数
       pluginFunctionCount: 0,
-      plugin: {}, // 插件详情
+      plugin: {
+        outerHTML: ''
+      }, // 插件详情
       pageInfo: {}, // 页面详情
       pluginRecordList: [],
       pageApiRecordList: { 'inUse': [], 'unUse': [] },
@@ -304,15 +298,17 @@ export default {
         })
     },
 
-    getMorePluginFunction(type) {
+    getMorePluginFunction(flag) {
       this.searchPluginFunctionParams.type = 'inUse'
-      this.searchPluginFunctionParams.page++
+      if (flag) {
+        this.searchPluginFunctionParams.size = 999
+      } else {
+        this.searchPluginFunctionParams.size = 5
+      }
+      this.morePluginFunction = flag
       getProjectPluginFunction(this.searchPluginFunctionParams)
         .then(res => {
-          _.forEach(res.data, item => {
-            this.inUsefunctionList.push(item)
-          })
-          this.pluginFunctionInUseTotal = res.total
+          this.inUsefunctionList = res.data
         })
     },
 
@@ -356,6 +352,9 @@ export default {
         .then(res => {
           this.pluginFunctionCount = res.count
         })
+    },
+    getMoreOuterHTML(flag) {
+      this.moreOuterHTML = flag
     }
 
   }
@@ -462,6 +461,34 @@ export default {
         margin-right: 8px;
         margin-bottom: 5px;
       }
+    }
+  }
+  .el-tag--dark.el-tag--info{
+    background-color: #ebf2fe;
+    border-color: #ebf2fe;
+    color: #333333;
+    margin-right: 8px;
+  }
+
+  .inUsefunctionList{
+    label{
+      font-weight: bold;
+      color: #666666;
+      font-size: 14px;
+    }
+  }
+  .page-api-recordList-inUse{
+    label{
+      font-weight: bold;
+      color: #666666;
+      font-size: 14px;
+    }
+  }
+  .page-api-recordList-unUse{
+    label{
+      font-weight: bold;
+      color: #666666;
+      font-size: 14px;
     }
   }
 }

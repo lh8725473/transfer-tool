@@ -102,7 +102,7 @@
       </div>
       <div class="inUsefunctionList">
         <el-row>
-          <label>调用API（{{ inUsefunctionList.length }}）:</label>
+          <label>调用API（{{ pluginFunctionInUseTotal }}）:</label>
           <el-tag
             v-for="(item,index) in inUsefunctionList"
             :key="index"
@@ -112,9 +112,17 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
+          <el-tag
+            v-show="inUsefunctionList.length < pluginFunctionInUseTotal "
+            type="''"
+            effect="plain"
+            @click="getMorePluginFunction"
+          >
+            更多...
+          </el-tag>
         </el-row>
         <el-row>
-          <label @click="showPluginFunctionUnUse">未调用API（{{ pluginFunctionCount - inUsefunctionList.length }}）:</label>
+          <label>未调用API（{{ pluginFunctionUnUseTotal }}）:</label>
           <el-tag
             v-for="(item,index) in unUsefunctionList"
             :key="index"
@@ -124,9 +132,15 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <!-- <span v-for="(item,index) in functionList.unUse" :key="index">
-            {{ item.function_name }} (调用{{ item.count }}次)
-          </span> -->
+
+          <el-tag
+            v-show="unUsefunctionList.length < pluginFunctionCount - pluginFunctionInUseTotal"
+            type="''"
+            effect="plain"
+            @click="getMorePluginFunctionUnUse"
+          >
+            更多...
+          </el-tag>
         </el-row>
       </div>
     </div>
@@ -173,9 +187,11 @@ export default {
   data() {
     return {
       total: 0,
+      pluginFunctionInUseTotal: 0, // 插件调用api总数
+      pluginFunctionunUseTotal: 0, // 调用未调用api总数
       pluginFunctionCount: 0,
-      plugin: {},
-      pageInfo: {},
+      plugin: {}, // 插件详情
+      pageInfo: {}, // 页面详情
       pluginRecordList: [],
       pageApiRecordList: { 'inUse': [], 'unUse': [] },
       inUsefunctionList: [],
@@ -185,14 +201,36 @@ export default {
         size: 5,
         siteId: null,
         pathName: null,
+        classid: ''
+      },
+      searchPluginFunctionParams: { // 查询api调用未调用参数
+        page: 1,
+        size: 5,
+        siteId: null,
+        pathName: null,
         classid: '',
         type: 'inUse'
+      },
+      searchPluginFunctionUnUseParams: { // 查询api调用未调用参数
+        page: 0,
+        size: 5,
+        siteId: null,
+        pathName: null,
+        classid: '',
+        type: 'unUse'
       }
     }
   },
   created() {
     this.searchParams.siteId = this.$route.query.siteId
     this.searchParams.pathName = this.$route.query.pathName
+
+    this.searchPluginFunctionParams.siteId = this.$route.query.siteId
+    this.searchPluginFunctionParams.pathName = this.$route.query.pathName
+
+    this.searchPluginFunctionUnUseParams.siteId = this.$route.query.siteId
+    this.searchPluginFunctionUnUseParams.pathName = this.$route.query.pathName
+
     this.getPageBySiteId()
     this.getPagePlugin()
     // this.getFunction()
@@ -212,12 +250,16 @@ export default {
       })
       row.selected = true
       this.searchParams.classid = row.classId
+      this.searchPluginFunctionParams.classid = row.classId
+      this.searchPluginFunctionUnUseParams.classid = row.classId
       this.getPluginInfo() // 获取插件详细信息
       this.getProjectPluginFunctionCount() // 获取插件所有api个数
       getProjectPluginFunction(this.searchParams) // 查询插件使用api记录
         .then(res2 => {
           if (res2 != null) {
-            this.inUsefunctionList = res2
+            this.inUsefunctionList = res2.data
+            this.pluginFunctionInUseTotal = res2.total
+            this.pluginFunctionUnUseTotal = this.pluginFunctionCount - this.pluginFunctionInUseTotal
           }
         })
     },
@@ -232,13 +274,16 @@ export default {
           this.pluginRecordList = res.data
           if (this.pluginRecordList.length > 0) {
             this.searchParams.classid = this.pluginRecordList[0].classId
+            this.searchPluginFunctionParams.classid = this.pluginRecordList[0].classId
+            this.searchPluginFunctionUnUseParams.classid = this.pluginRecordList[0].classId
+
             this.getPluginInfo()
             this.getProjectPluginFunctionCount()
-            getProjectPluginFunction(this.searchParams)
+            getProjectPluginFunction(this.searchPluginFunctionParams)
               .then(res2 => {
-                if (res2 != null) {
-                  this.inUsefunctionList = res2
-                }
+                this.inUsefunctionList = res2.data
+                this.pluginFunctionInUseTotal = res2.total
+                this.pluginFunctionUnUseTotal = this.pluginFunctionCount - this.pluginFunctionInUseTotal
               })
           }
         })
@@ -252,6 +297,31 @@ export default {
             this.pluginRecordList.push(item)
           })
           this.total = res.total
+        })
+    },
+
+    getMorePluginFunction(type) {
+      this.searchPluginFunctionParams.type = 'inUse'
+      this.searchPluginFunctionParams.page++
+      getProjectPluginFunction(this.searchPluginFunctionParams)
+        .then(res => {
+          _.forEach(res.data, item => {
+            this.inUsefunctionList.push(item)
+          })
+          this.pluginFunctionInUseTotal = res.total
+        })
+    },
+
+    getMorePluginFunctionUnUse() {
+      this.searchPluginFunctionUnUseParams.type = 'unUse'
+      this.searchPluginFunctionUnUseParams.page++
+      this.searchPluginFunctionUnUseParams.size = this.pluginFunctionCount - this.pluginFunctionInUseTotal
+      getProjectPluginFunction(this.searchPluginFunctionUnUseParams)
+        .then(res => {
+          _.forEach(res.data, item => {
+            this.unUsefunctionList.push(item)
+          })
+          this.pluginFunctionUnUseTotal = res.total
         })
     },
     getPageApiList() {
@@ -278,7 +348,7 @@ export default {
       // this.searchParams.type = 'inUse'
     },
     getProjectPluginFunctionCount() {
-      getProjectPluginFunctionCount(this.searchParams)
+      getProjectPluginFunctionCount(this.searchPluginFunctionParams)
         .then(res => {
           this.pluginFunctionCount = res.count
         })

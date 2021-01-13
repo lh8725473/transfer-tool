@@ -28,7 +28,7 @@
         </el-tag>
       </div>
 
-      <div class="panel-content">
+      <div v-if="pluginRecordList.legth>0" class="panel-content">
         <el-row class="plugin-detail">
           <el-row class="margin-bottom15">
             <el-col :span="8" class="text-overflow">
@@ -110,7 +110,7 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="!morePluginFunction && inUsefunctionList.length < pluginFunctionInUseTotal" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
         <el-row>
@@ -124,7 +124,7 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="!morePluginFunctionUnUse && pluginFunctionCount - pluginFunctionInUseTotal > 0" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
@@ -145,7 +145,7 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePageFunction" type="text" size="medium" @click="getMorePageFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-if="pageApiInUseList.legth <pageApiInUseTotal" v-show="!morePageFunction" type="text" size="medium" @click="getMorePageFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePageFunction" type="text" size="medium" @click="getMorePageFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
         <el-row>
@@ -159,7 +159,7 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-if="pageApiTotal - pageApiInUseTotal >0" v-show="!morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
@@ -209,7 +209,8 @@ export default {
         size: 5,
         siteId: null,
         pathName: null,
-        classid: ''
+        classid: '',
+        type: 'all'
       },
       searchPluginFunctionParams: { // 查询api调用未调用参数
         page: 1,
@@ -286,11 +287,11 @@ export default {
 
       this.morePageFunction = false
       this.morePageFunctionUnUse = false
-      // this.searchPluginFunctionParams.page = 1
+      this.searchPluginFunctionParams.size = 5
       // this.searchPluginFunctionUnUseParams.page = 1
       this.getPluginInfo() // 获取插件详细信息
       this.getProjectPluginFunctionCount() // 获取插件所有api个数
-      getProjectPluginFunction(this.searchParams) // 查询插件使用api记录
+      getProjectPluginFunction(this.searchPluginFunctionParams) // 查询插件使用api记录
         .then(res2 => {
           if (res2 != null) {
             this.inUsefunctionList = res2.data
@@ -430,7 +431,7 @@ export default {
       // this.searchParams.type = 'inUse'
     },
     getProjectPluginFunctionCount() {
-      getProjectPluginFunctionCount(this.searchPluginFunctionParams)
+      getProjectPluginFunctionCount(this.searchParams)
         .then(res => {
           this.pluginFunctionCount = res.count
         })
@@ -454,6 +455,7 @@ export default {
   .pageTitle-url{
     background: #ecf1f8;
     padding: 15px;
+    margin-bottom: 20px;
   }
   .plugin-detail{
     padding: 15px 0;
@@ -557,6 +559,9 @@ export default {
       font-weight: bold;
       color: #666666;
       font-size: 14px;
+    }
+     .el-row{
+       margin-top: 20px;
     }
   }
   .page-api-recordList-inUse{

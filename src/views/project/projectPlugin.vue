@@ -27,7 +27,7 @@
         </el-tag>
       </div>
 
-      <div class="panel-content">
+      <div v-if="pluginRecordList.length>0" class="panel-content">
         <el-row class="plugin-detail">
           <el-row class="margin-bottom15">
             <el-col :span="8" class="text-overflow">
@@ -91,33 +91,34 @@
 
         </el-row>
       </div>
-      <div class="functionList">
+      <div class="inUsefunctionList">
         <el-row>
-          <label>调用API（{{ functionList.inUse.length }}）:</label>
+          <label>调用API（{{ pluginFunctionInUseTotal }}）: </label>
           <el-tag
-            v-for="(item,index) in functionList.inUse"
+            v-for="(item,index) in inUsefunctionList"
             :key="index"
-            type="''"
-            effect="plain"
+            type="info"
+            effect="dark"
             size="medium"
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
+          <el-button v-show="!morePluginFunction&& inUsefunctionList.length<pluginFunctionTotal" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
         <el-row>
-          <label>未调用API（{{ functionList.unUse.length }}）:</label>
+          <label>未调用API（{{ pluginFunctionTotal - pluginFunctionInUseTotal }}）:</label>
           <el-tag
-            v-for="(item,index) in functionList.unUse"
+            v-for="(item,index) in unUsefunctionList"
             :key="index"
-            type="''"
-            effect="plain"
+            type="info"
+            effect="dark"
             size="medium"
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <!-- <span v-for="(item,index) in functionList.unUse" :key="index">
-            {{ item.function_name }} (调用{{ item.count }}次)
-          </span> -->
+          <el-button v-show="!morePluginFunctionUnUse && pluginFunctionTotal - pluginFunctionInUseTotal>0" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
     </div>
@@ -146,21 +147,45 @@ export default {
     return {
       domain: '',
       total: 0,
+      morePluginFunction: false,
+      morePluginFunctionUnUse: false,
+      pluginFunctionTotal: 0,
+      pluginFunctionInUseTotal: 0, // 插件调用api总数
+      pluginFunctionunUseTotal: 0, // 插件未调用api总数
+      inUsefunctionList: [],
+      unUsefunctionList: [],
       plugin: {},
       pluginRecordList: [],
-      functionList: { 'inUse': [], 'unUse': [] },
+
       sitePage: [],
+      searchPluginFunctionParams: { // 查询插件api调用未调用参数
+        page: 1,
+        size: 5,
+        classid: '',
+        siteId: '',
+        type: 'inUse'
+      },
+      searchPluginFunctionUnUseParams: { // 插件查询api调用未调用参数
+        page: 1,
+        size: 5,
+        classid: '',
+        siteId: '',
+        type: 'unUse'
+      },
       searchParams: {
         page: 1,
         size: 5,
         siteId: null,
-        classid: ''
+        classid: '',
+        type: 'all'
       }
     }
   },
   created() {
     this.domain = this.$route.query.domain
     this.searchParams.siteId = this.$route.query.siteId
+    this.searchPluginFunctionUnUseParams.siteId = this.$route.query.siteId
+    this.searchPluginFunctionParams.siteId = this.$route.query.siteId
     this.getProjectPluginList()
   },
   methods: {
@@ -171,13 +196,30 @@ export default {
       row.selected = true
       this.plugin = row
       this.searchParams.classid = this.plugin.classId
-      getPluginFuntionBySite(this.searchParams)
+      this.searchPluginFunctionUnUseParams.classid = this.plugin.classId
+      this.searchPluginFunctionParams.classid = this.plugin.classId
+      this.morePluginFunction = false
+      this.morePluginFunctionUnUse = false
+
+      this.getProjectPluginCount()
+      this.searchPluginFunctionParams.size = 5
+      getPluginFuntionBySite(this.searchPluginFunctionParams)
         .then(res2 => {
-          this.functionList = res2
+          this.inUsefunctionList = res2.data
+          this.pluginFunctionInUseTotal = res2.total
+          this.unUsefunctionList = []
         })
       getUsePluginPageBySite(this.searchParams)
         .then(res => {
           this.sitePage = res
+        })
+    },
+
+    getProjectPluginCount() {
+      getPluginFuntionBySite(this.searchParams)
+        .then(res2 => {
+          this.pluginFunctionTotal = res2.total
+          console.log('=====' + this.pluginFunctionTotal)
         })
     },
     getProjectPluginList() {
@@ -192,9 +234,15 @@ export default {
           if (this.pluginRecordList.length > 0) {
             this.plugin = this.pluginRecordList[0]
             this.searchParams.classid = this.plugin.classId
-            getPluginFuntionBySite(this.searchParams)
+            this.searchPluginFunctionParams.classid = this.plugin.classId
+            this.searchPluginFunctionUnUseParams.classid = this.plugin.classId
+            this.getProjectPluginCount()
+            this.searchPluginFunctionParams.type = 'inUse'
+
+            getPluginFuntionBySite(this.searchPluginFunctionParams)
               .then(res2 => {
-                this.functionList = res2
+                this.inUsefunctionList = res2.data
+                this.pluginFunctionInUseTotal = res2.total
               })
             getUsePluginPageBySite(this.searchParams)
               .then(res => {
@@ -213,6 +261,37 @@ export default {
           })
           this.total = res.total
         })
+    },
+
+    getMorePluginFunction(flag) {
+      this.searchPluginFunctionParams.type = 'inUse'
+      if (flag) {
+        this.searchPluginFunctionParams.size = 999
+      } else {
+        this.searchPluginFunctionParams.size = 5
+      }
+      this.morePluginFunction = flag
+      getPluginFuntionBySite(this.searchPluginFunctionParams)
+        .then(res => {
+          this.inUsefunctionList = res.data
+        })
+    },
+
+    getMorePluginFunctionUnUse(flag) {
+      this.searchPluginFunctionUnUseParams.type = 'unUse'
+      if (flag) {
+        this.searchPluginFunctionUnUseParams.size = 999
+        getPluginFuntionBySite(this.searchPluginFunctionUnUseParams)
+          .then(res => {
+            this.unUsefunctionList = res.data
+          })
+      } else {
+        this.unUsefunctionList = []
+      }
+      this.morePluginFunctionUnUse = flag
+
+      // this.searchPluginFunctionUnUseParams.page++
+      // this.searchPluginFunctionUnUseParams.size = this.pluginFunctionCount - this.pluginFunctionInUseTotal
     }
 
   }
@@ -286,6 +365,59 @@ export default {
       }
 
     }
+    .margin-bottom15{
+    margin-bottom: 15px;
+  }
+  .elColClass{
+    display: flex;
+  }
+  .plugin-row{
+    background: #FFFFFF;
+    border: 1px solid #E9E9E9;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    background-color: #DCDFE6;
+  }
+  .functionList{
+    .el-tag{
+      margin-right: 8px;
+      margin-bottom: 5px;
+    }
+  }
+  .page-api-recordList{
+    .page-api-recordList-inUse{
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .el-tag{
+        margin-right: 8px;
+        margin-bottom: 5px;
+      }
+    }
+    .page-api-recordList-unUse{
+      .el-tag{
+        margin-right: 8px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  .el-tag--dark.el-tag--info{
+    background-color: #ebf2fe;
+    border-color: #ebf2fe;
+    color: #333333;
+    margin-right: 8px;
+  }
+
+    .inUsefunctionList{
+    label{
+      font-weight: bold;
+      color: #666666;
+      font-size: 14px;
+
+    }
+    .el-row{
+       margin-top: 20px;
+    }
+  }
   }
   .margin-bottom15{
     margin-bottom: 15px;

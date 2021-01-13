@@ -89,23 +89,35 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/pluginDetail',
-    name: 'plugin',
-    component: () => import('@/views/plugin/pluginDetail'),
-    hidden: true
-  },
-  {
-    path: '/terminal',
+    path: '/plugin',
     component: Layout,
     children: [
       {
-        path: '/terminal',
-        name: 'terminal',
-        component: () => import('@/views/terminal/index'),
-        meta: { title: '终端管理', icon: 'terminal' }
+        path: '/plugin',
+        name: 'plugin',
+        component: () => import('@/views/plugin/index'),
+        meta: { title: '插件管理', icon: 'shuju' }
+      }, {
+        path: '/pluginDetail',
+        name: 'plugin',
+        component: () => import('@/views/plugin/pluginDetail'),
+        hidden: true
       }
     ]
   },
+  {
+    path: '/dataAnalysis',
+    component: Layout,
+    children: [
+      {
+        path: '/dataAnalysis',
+        name: 'dataAnalysis',
+        component: () => import('@/views/dataAnalysis/index'),
+        meta: { title: '统计分析', icon: 'shujufenxi' }
+      }
+    ]
+  },
+
   {
     path: '/packetManage',
     component: Layout,
@@ -126,23 +138,12 @@ export const constantRoutes = [
         path: '/dataManage',
         name: 'dataManage',
         component: () => import('@/views/dataManage/index'),
-        meta: { title: '数据详情', icon: 'shuju' },
+        meta: { title: '数据管理 - 数据详情', icon: 'shuju' },
         hidden: true
       }
     ]
   },
-  {
-    path: '/plugin',
-    component: Layout,
-    children: [
-      {
-        path: '/plugin',
-        name: 'plugin',
-        component: () => import('@/views/plugin/index'),
-        meta: { title: '插件管理', icon: 'shuju' }
-      }
-    ]
-  },
+
   {
     path: '/dataDetail',
     component: Layout,
@@ -151,20 +152,20 @@ export const constantRoutes = [
         path: '/dataDetail',
         name: 'dataDetail',
         component: () => import('@/views/dataManage/dataDetail'),
-        meta: { title: '数据详情' },
+        meta: { title: '数据管理 - 数据详情 - 页面详情' },
         hidden: true
       }
     ]
   },
   {
-    path: '/dataAnalysis',
+    path: '/terminal',
     component: Layout,
     children: [
       {
-        path: '/dataAnalysis',
-        name: 'dataAnalysis',
-        component: () => import('@/views/dataAnalysis/index'),
-        meta: { title: '数据分析', icon: 'shujufenxi' }
+        path: '/terminal',
+        name: 'terminal',
+        component: () => import('@/views/terminal/index'),
+        meta: { title: '终端管理', icon: 'terminal' }
       }
     ]
   },

@@ -143,7 +143,7 @@
             effect="dark"
             size="medium"
           >
-            {{ item.function_name }} (调用{{ item.count }}次)
+            {{ item.name }} (调用{{ item.count }}次)
           </el-tag>
           <el-button v-if="pageApiInUseList.legth <pageApiInUseTotal" v-show="!morePageFunction" type="text" size="medium" @click="getMorePageFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePageFunction" type="text" size="medium" @click="getMorePageFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>

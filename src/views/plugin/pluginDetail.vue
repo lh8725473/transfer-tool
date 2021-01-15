@@ -111,7 +111,7 @@
         border
         :data="siteRecordList"
         highlight-current-row
-        style="width: 100%;height: 100%"
+        style="width: 100%;height: 100%;margin-top: 20px;"
       >
 
         <el-table-column
@@ -168,17 +168,37 @@
         插件使用终端（{{ deviceTotal }}）
       </div>
       <el-row>
-        <el-col v-for="(item,index) in deviceRecordList" :key="index" :span="8">
-          <el-card :body-style="{ padding: '0px' }">
-            <div style="padding: 14px;">
-              <p>终端用户名：{{ item.device_user_name }}</p>
-              <p>终端系统：{{ item.sys_name }} {{ item.version }} {{ item.os_platform }}</p>
-              <p>唯一识别：{{ item.device_serial }}</p>
-              <p>终端IP:{{ item.ip_address }}</p>
-              <p>系统服务商：{{ item.os_service_pack }}</p>
+        <div class="device-record-list">
+          <div class="device-record-item" v-for="(item,index) in deviceRecordList" :key="index">
+            <div class="device-record-item-image">
+              <div class="icon-box icon-box1">
+                <svg-icon icon-class="wangzhan" />
+              </div>
             </div>
-          </el-card>
-        </el-col>
+            <div class="device-record-item-detail">
+              <div class="item-row">
+                <span class="label">终端用户名：</span>
+                <span class="text">{{ item.device_user_name }}</span>  
+              </div>
+              <div class="item-row">
+                <span class="label">终端系统：</span>
+                <span class="text">{{ item.sys_name }} {{ item.version }} {{ item.os_platform }}</span>  
+              </div>
+              <div class="item-row">
+                <span class="label">唯一识别：</span>
+                <span class="text">{{ item.device_serial }}</span>  
+              </div>
+              <div class="item-row">
+                <span class="label">终端IP：</span>
+                <span class="text">{{ item.ip_address }}</span>  
+              </div>
+              <div class="item-row">
+                <span class="label">系统服务商：</span>
+                <span class="text">{{ item.os_service_pack }}</span>  
+              </div>
+            </div>
+          </div>
+        </div>
       </el-row>
 
     </div>
@@ -458,6 +478,71 @@ export default {
         margin-bottom: 5px;
       }
     }
+  }
+  .device-record-list{
+    margin-top: 20px;
+    &::after{
+      clear: both;
+    }
+    .device-record-item{
+      float: left;
+      display: flex;
+      width: 375px;
+      height: 200px;
+      background: #FFFFFF;
+      border: 1px solid #EAEBF1;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      margin-right: 15px;
+      .device-record-item-detail{
+        width: 230px;
+      }
+      .item-row{
+        border-bottom: 1px solid #EAEBF1;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        display: flex;
+        width: 100%;
+        &:first-child{
+          padding-top: 0;
+        }
+        &:last-child{
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+        .label{
+          color: #666666;
+          width: 100px;
+          text-align: right;
+        }
+        .text{
+          color: #333333;
+          flex: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      .device-record-item-image{
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+        .icon-box{
+          width: 100px;
+          height: 100px;
+          background: #305BA4;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 120px;
+          .svg-icon{
+            font-size: 50px;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+
   }
   .site-page-list{
     margin: 0 -30px;

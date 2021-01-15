@@ -19,6 +19,7 @@ pageService.getPageRecordList = data => {
  * post page/pageRecord
  */
 pageService.getPageApiDetail = data => {
+  console.log(data)
   return service({
     url: 'page/pageApiDetail',
     method: 'post',

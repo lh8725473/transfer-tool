@@ -28,7 +28,7 @@
         </el-tag>
       </div>
 
-      <div v-if="pluginRecordList.legth>0" class="panel-content">
+      <div v-if="pluginRecordList.length>0" class="panel-content">
         <el-row class="plugin-detail">
           <el-row class="margin-bottom15">
             <el-col :span="8" class="text-overflow">

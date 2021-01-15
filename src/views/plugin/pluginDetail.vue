@@ -97,7 +97,7 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePluginFunctionUnUse &&  pluginFunctionTotal - pluginFunctionInUseTotal >0 " type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="!morePluginFunctionUnUse && pluginFunctionTotal - pluginFunctionInUseTotal >0 " type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
@@ -169,7 +169,7 @@
       </div>
       <el-row>
         <div class="device-record-list">
-          <div class="device-record-item" v-for="(item,index) in deviceRecordList" :key="index">
+          <div v-for="(item,index) in deviceRecordList" :key="index" class="device-record-item">
             <div class="device-record-item-image">
               <div class="icon-box icon-box1">
                 <svg-icon icon-class="wangzhan" />
@@ -178,23 +178,31 @@
             <div class="device-record-item-detail">
               <div class="item-row">
                 <span class="label">终端用户名：</span>
-                <span class="text">{{ item.device_user_name }}</span>  
+                <span class="text">{{ item.device_user_name }}</span>
               </div>
               <div class="item-row">
                 <span class="label">终端系统：</span>
-                <span class="text">{{ item.sys_name }} {{ item.version }} {{ item.os_platform }}</span>  
+                <el-tooltip placement="top">
+                  <div slot="content" class="tooltipContent">{{ item.sys_name }} {{ item.version }} {{ item.os_platform }}</div>
+                  <span class="text">{{ item.sys_name }} {{ item.version }} {{ item.os_platform }}</span>
+                </el-tooltip>
+
               </div>
               <div class="item-row">
                 <span class="label">唯一识别：</span>
-                <span class="text">{{ item.device_serial }}</span>  
+                <el-tooltip placement="top">
+                  <div slot="content" class="tooltipContent">{{ item.device_serial }}</div>
+                  <span class="text">{{ item.device_serial }}</span>
+                </el-tooltip>
+
               </div>
               <div class="item-row">
                 <span class="label">终端IP：</span>
-                <span class="text">{{ item.ip_address }}</span>  
+                <span class="text">{{ item.ip_address }}</span>
               </div>
               <div class="item-row">
                 <span class="label">系统服务商：</span>
-                <span class="text">{{ item.os_service_pack }}</span>  
+                <span class="text">{{ item.os_service_pack }}</span>
               </div>
             </div>
           </div>
@@ -325,7 +333,7 @@ export default {
 
 <style lang='scss'>
 .tooltipContent{
-    width: 300px;
+    width: 200px;
   }
 
 .pageDetail{

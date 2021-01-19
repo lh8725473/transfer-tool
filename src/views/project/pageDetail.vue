@@ -157,7 +157,7 @@
             effect="dark"
             size="medium"
           >
-            {{ item.function_name }} (调用{{ item.count }}次)
+            {{ item.name }} (调用{{ item.count }}次)
           </el-tag>
           <el-button v-if="pageApiTotal - pageApiInUseTotal >0" v-show="!morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
@@ -210,7 +210,7 @@ export default {
         siteId: null,
         pathName: null,
         classid: '',
-        type: 'all'
+        type: 'inUse'
       },
       searchPluginFunctionParams: { // 查询api调用未调用参数
         page: 1,
@@ -236,7 +236,7 @@ export default {
         type: 'inUse'
       },
       searchPageFunctionUnUseParams: { // 查询页面api调用参数
-        page: 0,
+        page: 1,
         size: 5,
         siteId: null,
         pathName: null,

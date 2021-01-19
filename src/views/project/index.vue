@@ -9,6 +9,10 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit">搜索</el-button>
         </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">导出</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -119,7 +123,7 @@
           :show-overflow-tooltip="true"
         >
           <template slot-scope="siteScope">
-            <el-link type="primary" @click="showHostDetail(siteScope.row.protocol +'://'+siteScope.row.host)">{{ siteScope.row.host }}</el-link>
+            <el-link type="primary" @click="showHostDetail(siteScope.row.protocol +'//'+siteScope.row.host)">{{ siteScope.row.host }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -364,6 +368,7 @@ export default {
     },
 
     showHostDetail(url) {
+      console.log(url)
       window.open(url, '_blank')
     }
 

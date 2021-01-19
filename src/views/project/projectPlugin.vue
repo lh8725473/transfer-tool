@@ -103,24 +103,24 @@
           >
             {{ item.function_name }} (调用{{ item.count }}次)
           </el-tag>
-          <el-button v-show="!morePluginFunction&& inUsefunctionList.length<pluginFunctionTotal" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="!morePluginFunction&& inUsefunctionList.length<pluginFunctionInUseTotal" type="text" size="medium" @click="getMorePluginFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePluginFunction" type="text" size="medium" @click="getMorePluginFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
-        </el-row>
-        <el-row>
-          <label>未调用API（{{ pluginFunctionTotal - pluginFunctionInUseTotal }}）:</label>
-          <el-tag
-            v-for="(item,index) in unUsefunctionList"
-            :key="index"
-            type="info"
-            effect="dark"
-            size="medium"
-          >
-            {{ item.function_name }} (调用{{ item.count }}次)
-          </el-tag>
-          <el-button v-show="!morePluginFunctionUnUse && pluginFunctionTotal - pluginFunctionInUseTotal>0" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
-          <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
-        </el-row>
-      </div>
+        </el-row></div>
+
+      <el-row>
+        <label>未调用API（{{ pluginFunctionTotal - pluginFunctionInUseTotal }}）:</label>
+        <el-tag
+          v-for="(item,index) in unUsefunctionList"
+          :key="index"
+          type="info"
+          effect="dark"
+          size="medium"
+        >
+          {{ item.function_name }} (调用{{ item.count }}次)
+        </el-tag>
+        <el-button v-show="!morePluginFunctionUnUse && pluginFunctionTotal - pluginFunctionInUseTotal>0" type="text" size="medium" @click="getMorePluginFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+        <el-button v-show="morePluginFunctionUnUse" type="text" size="medium" @click="getMorePluginFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
+      </el-row>
     </div>
 
     <div class="panel">

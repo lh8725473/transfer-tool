@@ -107,7 +107,7 @@ import adminService from '@/api/admin'
 import sourceFileRecordService from '@/api/sourceFileRecord'
 import { getUser } from '@/api/user'
 import deviceService from '@/api/device'
-
+import _ from 'lodash'
 export default {
   name: 'PacketManage',
   data() {
@@ -150,8 +150,30 @@ export default {
     this.getUser()
     this.getDevice()
     this.getSourceFileRecordList()
+    this.listenPacketStatus()
   },
   methods: {
+    listenPacketStatus() {
+      this.$socket.on('source_file_status_analysis', (res) => {
+        if (res.status === 2) {
+          _.forEach(this.sourceFileRecordList, record => {
+            if (record.sfId === res.sfId) {
+              console.log('分析成功')
+              // debugger
+              // record.status === 2
+              this.$set(record, 'status', 2)
+            }
+          })
+        } else if (res.status === 3) {
+          _.forEach(this.sourceFileRecordList, record => {
+            if (record.sfId === res.sfId) {
+              // record.status === 3
+              this.$set(record, 'status', 3)
+            }
+          })
+        }
+      })
+    },
     getUser() {
       getUser()
         .then(res => {

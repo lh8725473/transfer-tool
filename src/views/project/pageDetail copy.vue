@@ -2,13 +2,7 @@
   <div class="pageDetail">
     <div class="pageTitle-url">
       <label>{{ pageInfo.pageTitle }}</label>
-      <label style="width: 600px">
-
-            <el-tooltip placement="top">
-                <div slot="content" class="tooltipContent">{{  pageInfo.url }}</div>
-                <span class="text-overflow">{{  pageInfo.url }}</span>
-              </el-tooltip>
-      </label>
+      <label>{{ pageInfo.url }}</label>
     </div>
     <div class="panel">
       <div class="panel-header">
@@ -198,16 +192,23 @@
             </el-col>
           </el-row>
           <el-row class="margin-bottom15">
-            <el-col :span="24" class="text-overflow">
+            <el-col :span="24">
               <label>调用代码:</label>
               <!-- <span>
                 <pre v-highlightjs="pageApi.code"><code class="javascript" />
               </pre></span> -->
-              <span v-highlightjs v-html="queryCodeLight(pageApi.code,pageApi.name)" />
+              <!-- <span v-highlightjs v-html="queryCodeLight(pageApi.code,pageApi.name)" /> -->
+              <span>
+                <pre>
+                    <code ref="pageApiCode" class="javascript">{{ pageApi.code }}
+
+                    </code>
+                </pre>
+              </span>
             </el-col>
           </el-row>
           <el-row class="margin-bottom15">
-            <el-col :span="8">
+            <el-col :span="16">
               <el-popover
                 placement="right-start"
                 width="800"
@@ -218,9 +219,13 @@
                 </span> -->
                 <div>
                   <div><span>代码片段</span></div>
-                  <span v-highlightjs v-html="queryCodeLight(pageApi.context,pageApi.name)" />
+                  <pre>
+                      <code ref="pageApiCodeContext" class="javascript">{{ pageApi.context }}
+                      </code>
+                   </pre>
+                  <!-- <span v-highlightjs v-html="queryCodeLight(pageApi.context,pageApi.name)" /> -->
                 </div>
-                <el-link slot="reference" type="primary">查看代码上下文>></el-link>
+                <el-link slot="reference" type="primary" @click="showCodeContext">查看代码上下文>></el-link>
               </el-popover>
             </el-col>
 
@@ -230,9 +235,10 @@
               <el-dialog
                 title="代码"
                 :visible.sync="dialogVisible"
-                width="820px"
+                width="700px"
                 :before-close="closeDialog"
               >
+                <!-- <span v-highlightjs v-html="fileContent" /> -->
                 <el-pagination
                   background
                   :page-size="searchFileContentParams.size"
@@ -240,13 +246,14 @@
                   :total="fileContentTotal"
                   @current-change="(page) => fileContentPageChange(page)"
                 />
-                <span v-highlightjs v-html="fileContent" />
+                <span>
+                  <pre>
+                    <code ref="pageApiSourceCode" class="javascript">{{ fileContent }}
+                    </code>
+                </pre>
+                </span>
 
               </el-dialog>
-            </el-col>
-
-            <el-col :span="8">
-              <el-button type="text" @click="exportSourceCode(pageApi.functionId,'javascript')">下载原始文件</el-button>
             </el-col>
           </el-row>
         </el-row>
@@ -254,116 +261,13 @@
 
     </div>
 
-    <div class="panel">
-      <div class="panel-header">
-        浏览器特有CSS({{ pageCSSTotal }})
-      </div>
-      <div class="plugin-list">
-        <el-tag
-          v-for="(item,index) in pageCSSList"
-          :key="index"
-          :type="item.selected ? '' : 'info' "
-          :effect="item.selected ? 'dark' : 'plain'"
-          size="medium"
-          @click="changePageCSS(item)"
-        >
-          {{ item.name }} (出现{{ item.count }}次)
-          <i v-show="item.selected" :class="{isDisableCSS: pageCSS.index <= 1}" class="el-icon-top" @click="CSSRecordChange(pageCSS.index-1)" />
-          <i v-show="item.selected" :class="{isDisableCSS: pageCSSNameTotal <= pageCSS.index}" class="el-icon-bottom" @click="CSSRecordChange(pageCSS.index+1)" />
-
-        </el-tag>
-        <el-button v-if="pageCSSList.length <pageCSSTotal" v-show="!morePageCSS" type="text" size="medium" @click="getMorePageCSS(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
-        <el-button v-show="morePageCSS" type="text" size="medium" @click="getMorePageCSS(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
-      </div>
-      <div v-if="pageCSSList.length>0" class="panel-content">
-        <el-row class="plugin-detail">
-          <el-row class="margin-bottom15">
-            <el-col :span="8" class="text-overflow">
-              <label>序号:</label>
-              <span>{{ pageCSS.index }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>API名称：</label>
-              <span>{{ pageCSS.name }}</span>
-            </el-col>
-            <el-col :span="8" class="text-overflow">
-              <label>行号(格式化后)：</label>
-              <span>{{ pageCSS.lineNumber }}</span>
-            </el-col>
-
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="24" class="elColClass">
-              <label>来源文件：</label>
-              <span>
-                {{ pageCSS.sourceFile }}
-              </span>
-            </el-col>
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="24" class="text-overflow">
-              <label>调用代码:</label>
-              <!-- <div class="article-content" v-html="formatData" /> -->
-              <!-- <pre v-highlightjs="pageCSS.code"><code class="javascript" /></pre> -->
-              <span v-highlightjs v-html="queryCodeLight(pageCSS.code,pageCSS.name)" />
-            </el-col>
-          </el-row>
-          <el-row class="margin-bottom15">
-            <el-col :span="8">
-              <el-popover
-                class="elpopover"
-                placement="right-start"
-                width="820px"
-                trigger="click"
-                title="代码片段"
-              >
-                <!-- <span>
-                  <pre v-highlightjs="pageCSS.context"><code class="javascript" /></pre>
-                </span> -->
-                <span v-highlightjs v-html="queryCodeLight(pageCSS.context,pageCSS.name)" />
-                <el-link slot="reference" type="primary">查看代码上下文>></el-link>
-              </el-popover>
-            </el-col>
-
-            <el-col :span="8">
-
-              <!-- <el-button type="text" @click="exportSourceCode(pageCSS.id,'css')">下载原始文件</el-button> -->
-              <el-button type="text" @click="showFileContent(pageCSS.id,'css')">查看全文</el-button>
-              <el-dialog
-                title="代码"
-                :visible.sync="dialogVisible"
-                width="800px"
-                :before-close="closeDialog"
-              > <el-pagination
-                  background
-                  :page-size="searchFileContentParams.size"
-                  layout="total,prev, pager, next"
-                  :total="fileContentTotal"
-                  @current-change="(page) => fileContentPageChange(page)"
-                />
-                <span v-highlightjs v-html="fileContent" />
-
-              </el-dialog>
-            </el-col>
-
-            <el-col :span="8">
-
-              <el-button type="text" @click="exportSourceCode(pageCSS.id,'css')">下载原始文件</el-button>
-
-            </el-col>
-
-          </el-row>
-        </el-row>
-      </div>
-
-    </div>
   </div>
 </template>
 <script>
 import { getProjectPluginByPage, getProjectPluginFunction, getProjectPageFunction, getPageBySiteId, getPluginById } from '@/api/project'
 import { getProjectPluginFunctionCount, getPageApiRecord, getPageCSSRecord, getProjectPageCSS, getLocalFileContent } from '@/api/project'
 import _ from 'lodash'
-import qs from 'qs'
+
 export default {
   name: 'PluginManage',
   data() {
@@ -469,37 +373,16 @@ export default {
     this.getPageApiList()
     this.getPageCSSList()
   },
+  mounted() {
+    // 开启代码高亮
+
+    this.$nextTick(() => {
+      hljs.initHighlightingOnLoad()
+      hljs.initLineNumbersOnLoad()
+    })
+  },
 
   methods: {
-
-    fmCode(code, language, line) {
-      if (code.length <= 0) {
-        return
-      }
-      let lines = null
-      let linenum = 0
-      if (typeof code === 'string') {
-        lines = code.split('\\n')
-        linenum = line - 10
-      } else {
-        lines = code
-        linenum = line
-      }
-
-      // const lines = code.split('\\n')
-      // lines = lines.filter(n => n)
-      let html = lines.map((item, index) => {
-        return '<li><span class="line-num"></span>' + item + '</li>'
-      }).join('')
-
-      html = '<ol start=' + linenum + '>' + html + '</ol>'
-      html = '<pre class="hljs"><code class="' + language + '">' + html + '</code></pre>'
-
-      console.log(html)
-
-      return html
-    },
-
     getPageBySiteId() {
       getPageBySiteId({ siteId: this.searchParams.siteId, pathName: this.searchParams.pathName })
         .then(res => {
@@ -724,8 +607,6 @@ export default {
             this.pageApi = res.data[0]
             this.pageApi.index = 1
             this.pageApiNameTotal = res.total
-            this.pageApi.code = this.fmCode(this.pageApi.code, this.pageApi.fileType, this.pageApi.lineNumber + 10)
-            this.pageApi.context = this.fmCode(this.pageApi.context, this.pageApi.fileType, this.pageApi.lineNumber)
           })
       }
     },
@@ -745,8 +626,6 @@ export default {
             this.pageCSS = res.data[0]
             this.pageCSS.index = 1
             this.pageCSSNameTotal = res.total
-            this.pageCSS.code = this.fmCode(this.pageCSS.code, this.pageApi.fileType, this.pageCSS.lineNumber + 10)
-            this.pageCSS.context = this.fmCode(this.pageCSS.context, this.pageApi.fileType, this.pageCSS.lineNumber)
           })
       }
     },
@@ -759,10 +638,25 @@ export default {
           this.pageApi = res.data[0]
           this.pageApi.index = 1
           this.pageApiNameTotal = res.total
-          this.pageApi.code = this.fmCode(this.pageApi.code, this.pageApi.fileType, this.pageApi.lineNumber + 10)
-          this.pageApi.context = this.fmCode(this.pageApi.context, this.pageApi.fileType, this.pageApi.lineNumber)
+          // this.pageApi.code = '>>>>>>1a\nb2<<<<<<'// this.pageApi.code.split('\n').join('\n')
+          // this.pageApi.context = this.pageApi.context  // .split('\\n').join('\n') // ['function a(){', "alert('111111')}"].join('\n')
+          this.$nextTick(() => {
+            hljs.highlightBlock(this.$refs.pageApiCode)
+            hljs.lineNumbersBlock(this.$refs.pageApiCode, {
+              startFrom: this.pageApi.lineNumber
+            })
+          })
         })
     },
+    showCodeContext() {
+      this.$nextTick(() => {
+        hljs.highlightBlock(this.$refs.pageApiCodeContext)
+        hljs.lineNumbersBlock(this.$refs.pageApiCodeContext, {
+          startFrom: this.pageApi.lineNumber - 10
+        })
+      })
+    },
+
     // 第一次加载时默认选中第一个CSS
     getPageCSSInfo() {
       this.searchPageCSSRecordParams.name = this.pageCSSList[0].name
@@ -771,9 +665,6 @@ export default {
           this.pageCSS = res.data[0]
           this.pageCSS.index = 1
           this.pageCSSNameTotal = res.total
-
-          this.pageCSS.code = this.fmCode(this.pageCSS.code, this.pageApi.fileType, this.pageCSS.lineNumber + 10)
-          this.pageCSS.context = this.fmCode(this.pageCSS.context, this.pageApi.fileType, this.pageCSS.lineNumber)
         })
     },
     // page api
@@ -783,8 +674,6 @@ export default {
         .then(res => {
           this.pageApi = res.data[0]
           this.pageApiNameTotal = res.total
-          this.pageApi.code = this.fmCode(this.pageApi.code, this.pageApi.fileType, this.pageApi.lineNumber + 10)
-          this.pageApi.context = this.fmCode(this.pageApi.context, this.pageApi.fileType, this.pageApi.lineNumber)
         })
     },
 
@@ -799,8 +688,6 @@ export default {
           this.pageApi = res.data[0]
           this.pageApi.index = index
           this.pageApiNameTotal = res.total
-          this.pageApi.code = this.fmCode(this.pageApi.code, this.pageApi.fileType, this.pageApi.lineNumber + 10)
-          this.pageApi.context = this.fmCode(this.pageApi.context, this.pageApi.fileType, this.pageApi.lineNumber)
         })
     },
 
@@ -812,8 +699,6 @@ export default {
           this.pageCSS = res.data[0]
           this.pageCSS.index = 1
           this.pageCSSNameTotal = res.total
-          this.pageCSS.code = this.fmCode(this.pageCSS.code, this.pageApi.fileType, this.pageCSS.lineNumber + 10)
-          this.pageCSS.context = this.fmCode(this.pageCSS.context, this.pageApi.fileType, this.pageCSS.lineNumber)
         })
     },
 
@@ -828,8 +713,6 @@ export default {
           this.pageCSS = res.data[0]
           this.pageCSS.index = index
           this.pageCSSNameTotal = res.total
-          this.pageCSS.code = this.fmCode(this.pageCSS.code, this.pageApi.fileType, this.pageCSS.lineNumber + 10)
-          this.pageCSS.context = this.fmCode(this.pageCSS.context, this.pageApi.fileType, this.pageCSS.lineNumber)
         })
     },
     queryCodeLight(code, queryName) {
@@ -849,8 +732,15 @@ export default {
       getLocalFileContent(this.searchFileContentParams)
         .then(res => {
           const startLine = ((this.searchFileContentParams.page - 1) * this.searchFileContentParams.size) + 1
-          this.fileContent = this.fmCode(res.data, fileType, startLine)
           this.fileContentTotal = res.total
+          this.fileContent = res.data.join('\n').replace('<', '&lt;').replace('/>', '/&gt;')
+          this.$nextTick(() => {
+            this.$refs.pageApiSourceCode.innerHTML = this.fileContent
+            hljs.highlightBlock(this.$refs.pageApiSourceCode)
+            hljs.lineNumbersBlock(this.$refs.pageApiSourceCode, {
+              startFrom: startLine
+            })
+          })
         })
     },
     // 关闭dialog
@@ -870,6 +760,12 @@ export default {
     // 导出原始文件
 
     exportSourceCode(recordId, fileType) {
+      // const params = qs.stringify({
+      //   token: ,
+
+      // })
+      // console.log(this.searchFileContentParams)
+
       window.open(process.env.VUE_APP_BASE_API + '/project/downloadSourceCode?token=' + localStorage.getItem('token') + '&recordId=' + recordId + '&fileType=' + fileType, '_blank')
     }
 
@@ -1019,56 +915,6 @@ export default {
    .isDisableCSS{
     color: #c0c4cc;
     cursor: not-allowed;
-  }
-}
-// 添加行号样式
-.hljs {
-   overflow-x: initial;
-}
-pre.hljs {
-  padding: 8px 2px;
-  border-radius: 5px;
-  position: relative;
-  width: 780px;
-
-  // ul {
-  //   list-style: decimal;
-  //   margin: 0;
-  //   padding: 0;
-  //   li {
-  //     overflow: hidden;
-  //     word-wrap:break-word;
-  //     list-style: none;
-  //     position: relative;
-  //     .line {
-  //       top: 0;
-  //       width: 40px;
-  //       height: 100%;
-  //       margin-right: 10px;
-  //       color: #d19a66;
-  //       border-right: 1px solid rgba(0, 0, 0, .66);
-  //     }
-  //   }
-  // }
- ol {
-    list-style: decimal;
-    margin: 0;
-    margin-left: 40px;
-    padding: 0;
-    li {
-      list-style: decimal-leading-zero;
-      position: relative;
-      padding-left: 10px;
-      white-space: break-spaces;
-      .line-num {
-        position: absolute;
-        left: -40px;
-        top: 0;
-        width: 40px;
-        height: 100%;
-        border-right: 1px solid rgba(0, 0, 0, .66);
-      }
-    }
   }
 
 }

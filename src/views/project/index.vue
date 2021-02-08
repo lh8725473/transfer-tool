@@ -69,6 +69,10 @@
                 label="特有API数"
               />
               <el-table-column
+                prop="cssNum"
+                label="特有CSS数"
+              />
+              <el-table-column
                 label="访问次数"
                 prop="accessPageNum"
               />
@@ -153,6 +157,11 @@
         <el-table-column
           prop="functionNum"
           label="特有API数"
+        />
+
+        <el-table-column
+          prop="cssNum"
+          label="特有CSS数"
         />
 
         <el-table-column

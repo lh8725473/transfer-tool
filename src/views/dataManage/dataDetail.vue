@@ -158,13 +158,43 @@
             effect="dark"
             size="medium"
           >
-            {{ item.function_name }} (调用{{ item.count }}次)
+            {{ item.name }} (调用{{ item.count }}次)
           </el-tag>
           <el-button v-if="pageApiTotal - pageApiInUseTotal >0" v-show="!morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
           <el-button v-show="morePageFunctionUnUse" type="text" size="medium" @click="getMorePageFunctionUnUse(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
         </el-row>
       </div>
     </div>
+
+    <div class="page-api-recordList panel">
+      <div class="panel-header">
+        特有CSS(2)
+      </div>
+      <div class="inUsefunctionList">
+        <el-row>
+          <label>调用API（2）: </label>
+          <el-tag
+            type="info"
+            effect="dark"
+            size="medium"
+          >
+            filter: alpha(opacity=50) (调用1次)
+          </el-tag>
+          <el-tag
+            type="info"
+            effect="dark"
+            size="medium"
+          >
+            .ie 6 .demo  (调用2次)
+          </el-tag>
+
+          <el-button v-if="pageApiInUseList.legth <pageApiInUseTotal" v-show="!morePageFunction" type="text" size="medium" @click="getMorePageFunction(true)">展开<i class="el-icon-arrow-down el-icon--right" /></el-button>
+          <el-button v-show="morePageFunction" type="text" size="medium" @click="getMorePageFunction(false)">收起<i class="el-icon-arrow-up el-icon--right" /></el-button>
+        </el-row>
+
+      </div>
+    </div>
+
     <div class="panel">
       <div class="panel-header">
         设备信息
@@ -388,7 +418,7 @@ export default {
         type: ''
       },
       searchPageFunctionUnUseParams: { // 查询页面api调用参数
-        page: 0,
+        page: 1,
         size: 5,
         siteId: null,
         type: 'unUse'
@@ -489,7 +519,7 @@ export default {
       this.getPageApiTotal()
       this.getPagePluginDetail()
       this.getPageDetailById()
-      this.getPageApiList()
+      // this.getPageApiList()
     },
     getPageDetailById() {
       pageService.getPageDetailById({

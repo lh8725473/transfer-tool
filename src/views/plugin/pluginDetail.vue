@@ -1,6 +1,6 @@
 <template>
   <div class="pageDetail">
-    <div class="pageTitle-url">
+    <div ref="codeHTML" class="pageTitle-url">
       <label>{{ plugin.name }}</label>
     </div>
     <div class="panel">
@@ -216,6 +216,7 @@
 <script>
 import pluginService from '@/api/plugin'
 import _ from 'lodash'
+import { mount } from '@vue/test-utils'
 export default {
   name: 'PluginManage',
   data() {
@@ -251,7 +252,19 @@ export default {
     this.getSiteList()
     this.getDeviceList()
   },
+  mounted() {
+    const el = this.$refs.codeHTML
+  },
   methods: {
+
+    reloadCode() {
+      const el = this.$refs.codeHTML
+      hljs.highlightBlock(el)
+
+      // 行号显示
+      hljs.initLineNumbersOnLoad({ singleLine: true })
+    },
+
     getPluginInfo() {
       pluginService.getPluginDetail({ classid: this.searchParams.classid, version: this.searchParams.version })
         .then(res => {

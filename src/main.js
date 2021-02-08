@@ -29,6 +29,7 @@ import * as filters from '@/utils/filters'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import 'highlight.js/styles/atom-one-dark.css'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -78,3 +79,48 @@ const vueInstance = new Vue({
 
 console.log(vueInstance)
 export default vueInstance
+
+var hljs = require('highlight.js')
+// import hljs from 'highlight.js';
+
+var vueHighlightJS = {}
+vueHighlightJS.install = function install(Vue) {
+  Vue.directive('highlightjs', {
+    deep: true,
+    bind: function bind(el, binding) {
+      // on first bind, highlight all targets
+      var targets = el.querySelectorAll('code')
+      var target
+      var i
+
+      for (i = 0; i < targets.length; i += 1) {
+        target = targets[i]
+
+        if (typeof binding.value === 'string') {
+          // if a value is directly assigned to the directive, use this
+          // instead of the element content.
+          target.textContent = binding.value
+        }
+
+        hljs.highlightBlock(target)
+      }
+    },
+    componentUpdated: function componentUpdated(el, binding) {
+      // after an update, re-fill the content and then highlight
+      var targets = el.querySelectorAll('code')
+      var target
+      var i
+
+      for (i = 0; i < targets.length; i += 1) {
+        target = targets[i]
+        if (typeof binding.value === 'string') {
+          target.textContent = binding.value
+        }
+        hljs.highlightBlock(target)
+      }
+    }
+  })
+}
+
+// module.exports = vueHighlightJS
+Vue.use(vueHighlightJS)

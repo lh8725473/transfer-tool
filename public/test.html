@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+    <title>test</title>
+
+<!-- 
+	regsvr32 /s "D:\work\workspace\workspace-vs\ActiveXDemo\Release\ActiveXDemo.ocx
+-->
+ <!-- <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/firebug-lite/1.4.0/firebug-lite.js"></script> -->
+</head>
+<body>
+<div class="plugin">
+	<h3>插件测试</h3>
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<object id="objadd" name="this is name" style="left: 0px; width: 30%; top: 0px; height: 30%"
+			classid="clsid:93BA3E69-5E03-4AEA-AC5B-99FC4E02B12F"> </object>
+		<button name="add" onclick="executeAddFun();" style="width: 60px; height: 30px">
+			Add
+		</button>
+	</div>
+	
+	<div class="demo">
+		<span>ActiveXObject打开计算器</span>
+		<button name="打开计算器" onclick="openFileIIs();">
+			打开计算器
+		</button>
+	</div>
+	
+	
+	<div class="demo">
+		<span>ActiveXObject打开本地文件</span>
+		<input type="file" id="btn_file3">
+		<button name="打开文件夹" onclick="fff();">
+			打开选中的文件
+		</button>
+	</div>
+	
+	<div class="demo">
+		<span>ActiveXObject打开本地Excel</span>
+		<input type="file" id="btn_file4">
+		<button name="打开excel" onclick="StartExcel();">
+			打开excel
+		</button>
+	</div class="demo">
+	
+	<div class="demo">
+		<span>ActiveXObject读取文件内容</span>
+		<input type="file" id="btn_file5">
+		<button name="读取文件" onclick="readFile();">
+			读取文件
+		</button>
+	</div class="demo">
+	
+	<div class="demo">
+		<span>ActiveXObject保存文件内容</span>
+		<textarea id="text1" rows="3" cols="30" />
+			我是一个文本框。
+		</textarea>
+		<button name="保存文件" onclick="saveFile();">
+			保存文件到桌面
+		</button>
+	</div class="demo">
+	
+	
+	<div class="demo">
+		<span>打印插件</span>
+		<OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0 VIEWASTEXT ></OBJECT>
+		<a class="NOPRINT" href="#" style="cursor:hand" title="打印" onclick="document.all.WebBrowser.ExecWB(6,6);">打印表一</a>
+	</div>
+	
+	<div class="demo">
+		<span>office插件</span>
+		<button name="在线编辑word" onclick="javascript:openDoc();">
+			在线编辑word
+		</button>
+		
+		<object id="WebOffice" height="768" width='100%' style='left: 0px; top: 0px' classid='clsid:E77E049B-23FC-4DB8-B756-60529A35FAD5'
+            codebase="WebOffice.ocx#Version=3.0">
+            <param name='_ExtentX' value='6350'>
+            <param name='_ExtentY' value='6350'>
+            
+        </object>
+	
+	</div>
+	 
+	
+	
+	<div class="demo">
+		<span>flash插件</span>
+		<input type="file" id="btn_file7">
+		<button name="播放" onclick="flashPlay();">
+			播放
+		</button>
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="900" height="300" id="FlashZhuan" >
+            <param name="movie" value="">
+            <param name="FlashVars" value="prizeResult=3">
+            <param name="quality" value="high">
+            <param name="menu" value="false">
+            <param name="wmode" value="transparent">
+            <param name="allowScriptAccess" value="always" />            
+            <embed src="" name="FlashZhuan"/>
+    </object>
+	
+	</div>
+	
+	
+
+	<div class="demo">
+		<span>播放视频</span>
+		
+		<input type="file" id="btn_file6">
+		<button name="播放" onclick="addmedia();">
+			播放
+		</button>
+	</div>
+	
+	<div>
+		<object id="Player" width="400" height="300" classid="CLSID:6BF52A52-394A-11D3-B153-00C04F79FAA6">
+			<param name="URL" value=""/>
+			<param name="rate" value="1"/>
+			<param name="balance" value="0"/>
+			<param name="currentPosition" value="0"/>
+			<param name="defaultFrame" value/>
+			<param name="playCount" value="0"/>
+			<param name="autoStart" value="0"/>
+			<param name="currentMarker" value="0"/>
+			<param name="invokeURLs" value="1"/>
+			<param name="baseURL" value/>
+			<param name="volume" value="100"/>
+			<param name="mute" value="0"/>
+			<param name="uiMode" value="full"/>
+			<param name="stretchToFit" value="0"/>
+			<param name="windowlessVideo" value="0"/>
+			<param name="enabled" value="1"/>
+			<param name="enableContextMenu" value="1"/>
+			<param name="fullScreen" value="0"/>
+			<param name="SAMIStyle" value/>
+			<param name="SAMILang" value/>
+			<param name="SAMIFilename" value/>
+			<param name="captioningID" value/>
+			<param name="enableErrorDialogs" value="0"/>
+			<param name="_cx" value="7779"/>
+			<param name="_cy" value="1693"/>
+			<embed name="video" src="" width="600" height="800"/>
+		 </object>
+	</div>
+</div>
+
+<div class="api">
+	<h3>ie特有api测试</h3>
+	<div class="demo">
+		<span>showModalDialog</span>
+		<button name="模态窗口" id='mm' onclick="showWindow();">
+			模态窗口
+		</button>
+	</div>
+	
+	<div class="demo">
+		<span>attachEvent</span>
+		<span id="am">测试标签</span>
+		<button name="绑定事件" id='m2' onclick="attacheFun();">
+			给测试标签绑定事件
+		</button>
+	</div>
+	
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<span>detachEvent</span>
+		<button name="解绑事件" id='m3' onclick="detachFun();">
+			给测试标签解绑事件
+		</button>
+	</div>
+	
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<span>clientX,clientY</span>
+		<button name="" id='m4' onclick="clientXYFun();">
+			clientXY
+		</button>
+	</div>
+	
+	
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<span>keyWord</span>
+		<input id='inputValue' type="text" onkeydown="myFunction(event)">
+		<input type="button" onclick="btnClick()" value="单击" />
+	</div>
+	
+	
+	
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<span>播放图片</span>
+	</div>
+	<div class="demo">
+		<div id="benner">
+			<div class="img">
+				<img src="http://www.jq22.com/img/cs/500x300-1.png" class="imga active">
+				<img src="http://www.jq22.com/img/cs/500x300-2.png" class="imga">
+				<img src="http://www.jq22.com/img/cs/500x300-3.png" class="imga">
+				<img src="http://www.jq22.com/img/cs/500x300-4.png" class="imga">
+				
+			</div>
+			<ul class="title">
+				<li class="nr active"></li>
+				<li class="nr"></li>
+				<li class="nr"></li>
+				<li class="nr"></li>
+				
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<div class="css">
+	<h3>ie特有CSS测试</h3>
+
+	<div class="demo">
+		<!--定义activex控件，classid值为"ocxdemo.idl"中"coclass ocxdemo"的特性值-->
+		<span></span>
+		<input id='inputValue' type="text" onkeydown="myFunction(event)">
+	</div>
+	
+	<input type="button" onclick="btnClick()" value="单击" />
+</div>
+	
+
+</body>
+</html>
+
+<script type="text/javascript">(function(){var ct = document.getElementById("objadd"); ct.add(1, 2);})()</script>
+
+<script type="text/javascript" for="objadd" event="cb_add(a,b)">
+    callback(a, b);
+</script>
+
+<script type="text/javascript">
+	// 绑定事件
+	function attacheFun(){
+		try{
+			var spanTest = document.getElementById("am");
+			alert(spanTest.innerHTML);
+			spanTest.attachEvent("click",function(){
+				alert("点击事件绑定成功");
+			});
+		}catch(e){
+			alert(e)
+		}
+		
+	}
+	
+	function detachFun(){
+		try{
+			alert("解绑")
+			var spanTest = document.getElementById("am");
+			spanTest.detachEvent("click");
+		}catch(e){
+			alert(e)}
+	}
+
+    function executeAddFun() {
+        try {
+            var ct = document.getElementById("objadd");
+			if(ct){
+				//ct.show("123");
+                alert(ct.add(1, 2));
+			}else{
+				alert("not found object");
+			}
+            
+        } catch (e) {
+            alert(e);
+        }
+    }
+	
+	function clientXYFun(){
+		
+		var x = event.clientX;
+		var y = event.clientY;
+		alert("x= "+x +",y="+y);
+	}
+	
+	function fileChange(){
+		
+	}
+	
+    function showWindow(){
+       window.showModalDialog("这是一个模态窗口");
+    }
+
+    function callback(a, b) {
+        alert("callback：" + a + "|" + b);
+    }
+
+    function myFunction(event) {
+        var x = event.keyCode;
+        if (x == 27) {  // 27 是 ESC 键
+            alert ("测试ie特有方法 keycode, You pressed the Escape key!");
+        }
+        if(x ==13) {
+            var v = document.getElementById("inputValue").value;
+            alert(v);
+        }
+    }
+
+     function btnClick(){
+          alert("测试ie特有方法(srcElement) "+window.event.srcElement.value);
+     }
+	 
+	 function readFile() {
+		var path = document.getElementById("btn_file5").value;
+		var textFile  = new ActiveXObject("Scripting.FileSystemObject");
+		var readFile = textFile.opentextfile(path, 1, false, -1);
+		text = readFile.ReadLine();
+		readFile.close();
+		alert(text);
+		return text;
+    }
+	
+	function saveFile(){
+		var content = document.getElementById("text1").value;
+		alert(content);
+		var strFile = "D:\\test.txt";    //定义文件保存的路径
+    
+		//new一个ActiveXObject类的对象。
+		var objFSO = new ActiveXObject("Scripting.FileSystemObject");
+		
+		// 检查文件是否存在
+		
+		var objStream = objFSO.CreateTextFile(strFile, true);
+		objStream.Write(content);
+		objStream.Close(); // 关闭文件
+		alert("ok");
+		
+	}
+
+	function openFileIIs(){        
+        try{ 
+            var obj=new ActiveXObject("wscript.shell"); 
+            if(obj){ 
+              
+                obj.run("calc");/*打开屏幕键盘*/
+                //obj.Run('"'+filename+'"'); 
+                obj=null; 
+            } 
+        }catch(e){ 
+            alert("请确定是否存在该盘符或文件"); 
+        } 
+        
+    }
+
+	function fff(){        
+        try{ 
+			var path = document.getElementById("btn_file3").value;
+            var obj=new ActiveXObject("wscript.shell"); 
+            if(obj){ 
+              
+               obj.Run(path, 1, false );
+                obj=null; 
+            } 
+        }catch(e){ 
+            alert("请确定是否存在该盘符或文件"); 
+        } 
+        
+    }
+	var idTmr = "";
+
+	function StartExcel(){
+
+		var oExcel;
+		var oWorkbook;
+		var strAllName;
+		var path = document.getElementById("btn_file4").value;
+		oExcel = new ActiveXObject("Excel.Application");
+		oExcel.Workbooks.Open(path);
+		oExcel.DisplayAlerts = false;
+		oExcel.Visible = true;
+		idTmr = window.setInterval("Cleanup();",1000);
+	}
+	
+	function addmedia() {
+		var url = document.getElementById("btn_file6").value;
+		Player.settings.requestMediaAccessRights("full"); // 对本地播放列表的权限操作
+		clearlist();//清除列表
+		var playlist = Player.currentPlaylist;// 取得当前的播放列表
+		var currMedia = Player.newMedia(url);//新建一个指定URL的Media。
+		playlist.appendItem(currMedia);//添加录音
+		Player.controls.play();//开始播放
+		
+	}
+	//清空播放列表
+	function clearlist() {
+		while (Player.currentPlaylist.count > 0) {
+			var item = Player.currentPlaylist
+					.item(Player.currentPlaylist.count - 1);
+			Player.currentPlaylist.removeItem(item); //从播放列表中删除项
+		}
+	}
+	
+	
+	function flashPlay() {
+		var url = document.getElementById("btn_file7").value;
+		FlashZhuan.settings.requestMediaAccessRights("full"); // 对本地播放列表的权限操作
+		flashClearlist();//清除列表
+		var playlist = FlashZhuan.currentPlaylist;// 取得当前的播放列表
+		var currMedia = FlashZhuan.newMedia(url);//新建一个指定URL的Media。
+		playlist.appendItem(currMedia);//添加录音
+		FlashZhuan.controls.play();//开始播放
+		
+	}
+	//清空播放列表
+	function flashClearlist() {
+		while (FlashZhuan.currentPlaylist.count > 0) {
+			var item = FlashZhuan.currentPlaylist
+					.item(FlashZhuan.currentPlaylist.count - 1);
+			FlashZhuan.currentPlaylist.removeItem(item); //从播放列表中删除项
+		}
+	}
+	
+	//初始化控件 可以初始化加载文档等和设置weboffice的相关属性
+	function NotifyCtrlReady() {
+				document.all.WebOffice.LoadOriginalFile("", "doc");
+	}
+
+	
+	//WebOffice1_NotifyCtrlReady();  
+	function openDoc() {
+		
+		//加载控件
+		try{
+		alert(document.all.WebOffice);
+		document.all.WebOffice.LoadOriginalFile("", "xls");
+		//隐藏不需要的按钮
+		document.all.WebOffice.HideMenuItem(0x01 + 0x02 + 0x04 + 0x10 + 0x20);
+		}catch(e){
+			alert(e);
+		}
+	}
+	function WebOpen()
+	{
+		obj = document.all.item("WebOffice");
+		if (obj !='')
+		{
+			//等待控件初始化完毕，时间长短可以根据网络速度设定。
+			setTimeout('openDoc()',100);
+		}
+	}
+
+</script>
+
+<script>
+        window.onload = function() {
+    benner('#benner', '.nr', '.imga')
+
+    function benner(parent, controller, mod) {
+
+        var num = 0;
+        var controller = $(controller);
+        var mod = $(mod);
+        var benner = $(parent);
+        var autoPlayTime = 1500;
+        var imgNum = mod.length - 1;
+        var auto;
+
+        autoPlay();
+        //根据传进来的名字获取这个名字所对应的对象
+        function $(name) {
+            if (name[0] == '#') {
+                return document.getElementById(name.substr(1));
+            } else if (name[0] == '.') {
+                return document.getElementsByClassName(name.substr(1));
+            } else {
+                return document.getElementsByTagName(name);
+            }
+        }
+
+        //实现鼠标划过圆点,变化图片的效果
+        //function change(controller, mod){
+        //遍历控制器,绑定鼠标划过事件
+        for (var i = 0; i < controller.length; i++) {
+            //给控制器加个索引,并把i值赋值给索引
+            controller[i].index = i;
+            //给所有的控制器都加划过事件
+            controller[i].onmouseover = function() {
+                for (var j = 0; j < controller.length; j++) {
+                    //将所有控制器改为默认样式
+                    controller[j].className = 'nr';
+                }
+                //改变所选的控制器样式
+                this.className = 'nr active';
+                //将模型改为默认样式
+                for (var x = 0; x < mod.length; x++) {
+                    mod[x].className = 'imga';
+                }
+                //改变所选控制器对应的模型的样式
+                mod[this.index].className = 'imga active';
+            }
+        }
+        //}
+        //绑定鼠标移入,暂停播放图片
+        benner.onmouseover = function() {
+            clearInterval(auto);
+        }
+        //绑定鼠标离开,继续播放
+        benner.onmouseleave = function() {
+            autoPlay();
+        }
+        //指定播放那个图片
+        function play(num) {
+            for (var j = 0; j < controller.length; j++) {
+                controller[j].className = 'nr';
+            }
+            controller[num].className = 'nr active';
+            for (var x = 0; x < mod.length; x++) {
+                mod[x].className = 'imga';
+            }
+            mod[num].className = 'imga active';
+        }
+        //自动播放
+        function autoPlay() {
+            auto = setInterval(function() {
+                if (num > imgNum) {
+                    num = 0;
+                }
+                play(num);
+                num++;
+            }, autoPlayTime)
+        }
+    }
+
+}
+    </script>
+
+<style>
+.plugin {
+	margin-left:50px;
+	margin-top: 20px;
+	float: left;
+}
+.api {
+	margin-left:100px;
+	margin-top: 40px;
+	float: left;
+}
+.css {
+	margin-left:100px;
+	margin-top: 40px;
+	float: left;
+}
+
+.demo {
+	margin-top: 20px;
+}
+
+</style>
+
+<style>
+
+* {
+	margin:0px;
+	padding:0px;
+}
+#benner {
+	width:480px;
+	height:340px;
+	margin-top:10px;
+}
+#benner .imga {
+	display:none;
+}
+#benner .img .active {
+	display:block;
+}
+#benner .title {
+	width:;
+	height:16px;
+	background-color:rgba(226,226,226,0.6);
+	border-radius:30px;
+	margin-top:-35px;
+	float:left;
+	margin-left:40%;
+	margin-right:40%;
+	padding:6px 0px 0px 10px;
+	position:relative;
+}
+#benner .title .nr {
+	list-style:none;
+	width:10px;
+	height:10px;
+	background:#fff;
+	border-radius:10px;
+	float:left;
+	margin-right:10px;
+	margin-bottom:0px;
+}
+#benner .title .active {
+	background:#db192a;
+}
+
+</style>
+
+<!--
+<script>
+// start script
+var pageId = "2db3a274-3ab8-4bfd-824a-2760bba77b28";
+var pythonServer = "http://192.168.100.134:9000";
+var host = getHost();
+
+// 获取当前路径
+function getCurrentPageUrl(){
+    var currentPageUrl = "";
+    if (typeof this.href === "undefined") {
+        currentPageUrl = document.location.toString().toLowerCase();
+    }
+    else {
+        currentPageUrl = this.href.toString().toLowerCase();
+    }
+    return currentPageUrl;
+}
+
+function getHtmlContext(){
+    return document.documentElement.outerHTML
+}
+
+function getHost(){
+    var origin = window.location.origin;
+    if (typeof (origin) == "undefined") {
+        origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+    }
+    return origin;
+}
+
+function getImportJs(){
+    // 解析html内容分析是否存在应用js
+    var urls = [];
+    var docScript = document.scripts;
+    console.log(docScript);
+    for (var i = 0; i < docScript.length; i++) {
+        var scriptSrc = docScript[i].src;
+        if (scriptSrc === null || scriptSrc ==='' ){
+            continue;
+        }else{
+            urls.push(scriptSrc);
+        }
+    };
+
+    return urls;
+}
+
+function getImportStype(){
+    // 解析html内容分析是否存在应用CSS
+    var urls = [];
+    var styles = document.styleSheets;
+    for (var i = 0; i < styles.length; i++) {
+        var styleHref = styles[i].href;
+        if (styleHref === null || styleHref ===''){
+            continue;
+        }else{
+            console.log("css path:" + styleHref);
+            urls.push(styleHref);
+        }
+    };
+
+    return urls;
+}
+
+
+function pushRecord(url,data){
+    // 发送分析结果到python 服务端
+
+        if (window.XMLHttpRequest) {
+            var request = new XMLHttpRequest(); //Firefox、 Opera、 IE7 和其它浏览器使用本地 JavaScript 对象
+        } else {
+            var request = new ActiveXObject("Microsoft.XMLHTTP"); //IE 5 和 IE 6 使用 ActiveX 控件
+        }
+        request.open("POST", url, true);
+        // request.setRequestHeader('content-type', 'application/json');
+        request.onreadystatechange = function() {
+            if (request.readyState === 4 && request.status == "200") {
+                // findIEAPI(url,request.responseText,'js');
+            }
+        }
+        request.send(JSON.stringify(data));
+  
+}
+
+
+function main(){
+   
+        var d = new Date();
+	var startTime = d.getTime();
+        var currentHtmlContext = getHtmlContext();
+        var jsFile = getImportJs();
+        var cssFile = getImportStype();
+        console.log(cssFile)
+        data = {}
+        data.host = host
+        data.pageUrl = getCurrentPageUrl()
+        data.jsUrls = jsFile
+        data.cssUrls = cssFile
+        data.pageContext = currentHtmlContext
+        data.pageId = pageId;
+        pushRecord(pythonServer + '/plugin/pageJsRecord',data)
+   
+}
+main()
+// end script
+
+</script>-->
+

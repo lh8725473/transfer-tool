@@ -131,10 +131,50 @@ export function getProjectPluginFunctionCount(params) {
   })
 }
 
-// export function addProject(data) {
-//   return request({
-//     url: '/project/add',
-//     method: 'post',
-//     data
-//   })
-// }
+/**
+ * 获取页面指定api引用记录
+ */
+
+export function getPageApiRecord(params) {
+  return request({
+    url: '/project/getProjectPageFunctionQuoteRecord',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取页面指定CSS引用记录
+ */
+
+export function getPageCSSRecord(params) {
+  return request({
+    url: '/project/getProjectPageCSSQuoteRecord',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取页面调用，未调用api列表
+ * @param params
+ */
+export function getProjectPageCSS(params) {
+  return request({
+    url: '/project/getProjectPageCSS',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取页面api,css 原始文件记录
+ * @param params
+ */
+export function getLocalFileContent(params) {
+  return request({
+    url: '/project/getLocalFileContent',
+    method: 'get',
+    params
+  })
+}
